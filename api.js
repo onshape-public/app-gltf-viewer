@@ -1,16 +1,11 @@
-
 const fetch = require('node-fetch');
-
-const express = require('express');
 
 const WebhookService = require('../services/webhook-service');
 const TranslationService = require('../services/translation-service');
-
 const { onshapeApiUrl } = require('../utils');
-
 const redisClient = require('../redis-client');
     
-const apiRouter = express.Router();
+const apiRouter = require('express').Router();
 
 /**
  * Get the Elements of the current document/workspace.

@@ -1,4 +1,3 @@
-
 const redis = require('redis');
 
 // The Redis client to be used throughout the app.

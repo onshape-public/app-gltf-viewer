@@ -1,8 +1,6 @@
-
 const fetch = require('node-fetch');
 
 const { onshapeApiUrl } = require('../utils');
-
 const redisClient = require('../redis-client');
 
 module.exports = {

@@ -1,4 +1,3 @@
-
 const path = require('path');
 const uuid = require('uuid');
 
@@ -9,10 +8,10 @@ const bodyParser = require('body-parser');
 const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const OnshapeStrategy = require('passport-onshape');
+
 const fetch = require('node-fetch');
 
 const redisClient = require('./redis-client');
-
 const { onshapeApiUrl } = require('./utils');
 
 const app = express();
