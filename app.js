@@ -16,10 +16,6 @@ const { onshapeApiUrl } = require('./utils');
 
 const app = express();
 
-/*app.set('views', path.join(__dirname, 'views'));
-app.engine('html', require('hbs').__express);
-app.set('view engine', 'html');*/
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(bodyParser.json());
