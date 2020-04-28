@@ -1,9 +1,9 @@
 const fetch = require('node-fetch');
 
-const WebhookService = require('../services/webhook-service');
-const TranslationService = require('../services/translation-service');
-const { onshapeApiUrl } = require('../utils');
-const redisClient = require('../redis-client');
+const WebhookService = require('./services/webhook-service');
+const TranslationService = require('./services/translation-service');
+const { onshapeApiUrl, forwardRequestToOnshape } = require('./utils');
+const redisClient = require('./redis-client');
     
 const apiRouter = require('express').Router();
 
@@ -16,12 +16,7 @@ const apiRouter = require('express').Router();
  *      -> 500, { error: '...' }
  */
 apiRouter.get('/elements', (req, res) => {
-    fetch(`${onshapeApiUrl}/documents/d/${req.query.documentId}/w/${req.query.workspaceId}/elements`, {
-        headers: { 'Authorization': `Bearer ${req.user.accessToken}` }
-    })
-        .then((resp) => resp.text())
-        .then((data) => res.status(200).send(data))
-        .catch((err) => res.status(500).json({ error: err }));
+    forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${req.query.documentId}/w/${req.query.workspaceId}/elements`, req, res);
 });
 
 /**
@@ -33,12 +28,7 @@ apiRouter.get('/elements', (req, res) => {
  *      -> 500, { error: '...' }
  */
 apiRouter.get('/parts', (req, res) => {
-    fetch(`${onshapeApiUrl}/parts/d/${req.query.documentId}/w/${req.query.workspaceId}`, {
-        headers: { 'Authorization': `Bearer ${req.user.accessToken}` }
-    })
-        .then((resp) => resp.text())
-        .then((data) => res.send(data))
-        .catch((err) => res.status(500).json({ error: err }));
+    forwardRequestToOnshape(`${onshapeApiUrl}/parts/d/${req.query.documentId}/w/${req.query.workspaceId}`, req, res);
 });
 
 /**
@@ -66,15 +56,15 @@ apiRouter.get('/gltf', (req, res) => {
         angularTolerance: 0.1090830782496456,
         maximumChordLength: 10
     };
-    (partId ? TranslationService.translatePart(req.user.accessToken, gltfElemId, partId, translationParams)
-        : TranslationService.translateElement(req.user.accessToken, gltfElemId, translationParams))
-            .then((json) => {
-                if (json.contentType.indexOf('json') > -1) {
-                    res.status(200).json(JSON.parse(json.data));
-                } else {
-                    res.status(200).contentType(json.contentType).send(json.data);
-                }
-            }).catch((err) => res.status(500).json({ error: err.data }));
+    try {
+        const resp = await (partId ? TranslationService.translatePart(req.user.accessToken, gltfElemId, partId, translationParams)
+            : TranslationService.translateElement(req.user.accessToken, gltfElemId, translationParams));
+        const data = (await resp.json()).data;
+        const contentType = resp.headers.get('Content-Type');
+        res.status(200).contentType(contentType).send(data);
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
 });
 
 /**
@@ -87,7 +77,7 @@ apiRouter.get('/gltf', (req, res) => {
  *      -or-
  *      -> 404 (which may mean that the translation is still being processed)
  */
-apiRouter.get('/gltf/:tid', (req, res) => {
+apiRouter.get('/gltf/:tid', async (req, res) => {
     redisClient.get(req.params.tid, (redisErr, results) => {
         if (redisErr) {
             res.status(500).json({ error: redisErr });
@@ -95,32 +85,23 @@ apiRouter.get('/gltf/:tid', (req, res) => {
             res.status(404).end();
         } else {
             // GLTF data is ready
-            fetch(`${onshapeApiUrl}/translations/${req.params.tid}`, { headers: { 'Authorization': `Bearer ${req.user.accessToken}` } })
-                .then((transResp) => transResp.json())
-                .then((transJson) => {
-                    if (transJson.requestState === 'FAILED') {
-                        res.status(500).json({ error: transJson.failureReason});
-                    } else {
-                        fetch(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, { headers: { 'Authorization': `Bearer ${req.user.accessToken}` } })
-                            .then((extDataResp) => {
-                                extDataResp.text()
-                                    .then((extDataBody) => res.status(extDataResp.status).contentType(extDataResp.headers.get('Content-Type')).send(extDataBody))
-                                    .catch((err) => res.status(500).json({ error: err }));
-                            }).catch((err) => res.status(500).json({ error: err }));
-                    }
-                }).catch((err) => res.status(500).json({ error: err }))
-                .finally(() => {
-                    const webhookID = results;
-                    WebhookService.unregisterWebhook(webhookID, req.user.accessToken)
-                        .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
-                        .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
-                });
+            const transResp = await fetch(`${onshapeApiUrl}/translations/${req.params.tid}`, { headers: { 'Authorization': `Bearer ${req.user.accessToken}` } });
+            const transJson = await transResp.json();
+            if (transJson.requestState === 'FAILED') {
+                res.status(500).json({ error: transJson.failureReason});
+            } else {
+                forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, req);
+            }
         }
+        const webhookID = results;
+        WebhookService.unregisterWebhook(webhookID, req.user.accessToken)
+            .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
+            .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
     });
 });
 
 /**
- * Recieve a webhook event.
+ * Receive a webhook event.
  * 
  * POST /api/event
  *      -> 200

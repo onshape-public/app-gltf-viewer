@@ -45,8 +45,9 @@ const defaultBody = Object.freeze({
  *      @param {string} jsonBodyToAdd.angularTolerance The angular tolerance of the translation.
  *      @param {string} jsonBodyToAdd.maximumChordLength The max chord length of the translation.
  * 
- * @returns {Promise<object,object>} Resolves or rejects with an object with properties `contentType` (string)
- *      and `data` (string), containing the Content-Type and response body of the translation trigger
+ * @returns {Promise<object,string>} Resolves with an object with properties `contentType` (string)
+ *      and `data` (string), containing the Content-Type and response body of the translation trigger,
+ *      or rejects with a string error message.
  */
 const startTranslation = (userAccessToken, url, jsonBodyToAdd) => {
     const body = Object.assign(Object.assign({}, defaultBody), jsonBodyToAdd);
@@ -64,7 +65,7 @@ const startTranslation = (userAccessToken, url, jsonBodyToAdd) => {
                 if (resp.ok) {
                     resolve({ contentType: resp.headers.get('Content-Type'), data: text });
                 } else {
-                    reject({ contentType: resp.headers.get('Content-Type'), data: text });
+                    reject(text);
                 }
             }).catch((err) => reject(err))
         }).catch((err) => reject(err));
