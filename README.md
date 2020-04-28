@@ -1,5 +1,5 @@
-# **gltf-viewer**
-The GLTF Viewer is a sample application allowing for visualizing GLTF data translated from an OnShape model. It is a Node.JS application that runs as an tab inside an Onshape document. Onshape passes the document context to the viewer, which is used to help generate the GLTF visualization.
+# **app-gltf-viewer**
+The GLTF Viewer is a sample application allowing for visualizing GLTF data translated from an Onshape model. It is a Node.JS application that runs as an tab inside an Onshape document. Onshape passes the document context to the viewer, which is used to help generate the GLTF visualization.
 
 This example could also be re-worked to make it a fully separate application, which would communicate with the Onshape API to obtain the document information (as opposed to Onshape providing that context for the application).
 
@@ -12,7 +12,7 @@ These instructions assume that the following utilities are installed: git, npm, 
 1. Push to a new mirror repository: `cd gltf-viewer.git && git push --mirror https://github.com/youruser/my-gltf-viewer.git`.
 1. Clean up the temporary repository: `cd .. && rm -rf gltf-viewer.git`.
 1. Clone your newly mirrored repository: `https://github.com/youruser/my-gltf-viewer.git`.
-1. Create a heroku app for your project: `cd my-gltf-viewer && heroku create`. Note the URL provided in the ouput of this command.
+1. Create a heroku app for your project: `cd my-gltf-viewer && heroku create`. Note the URL provided in the output of this command.
 1. Go to the [Onshape Developer Portal](https://dev-portal.onshape.com/), create a new OAuth Application and Store entry with the following settings. Make sure that you copy the Client ID and Client Secret, as these will be needed later, and cannot be shown again.
 
 OAuth Application Setting | Value
