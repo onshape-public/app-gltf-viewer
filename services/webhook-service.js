@@ -16,35 +16,37 @@ module.exports = {
      */
     registerWebhook: (sessionID, userAccessToken, documentId) => {
         return new Promise((resolve, reject) => {
-            redisClient.get(sessionID, (err, data) => {
+            redisClient.get(sessionID, async (err, data) => {
                 if (err) {
                     reject('Failed to read data from Redis ' + err);
                 } else if (!data) {
                     reject('No session data found');
                 } else {
-                    const jsonData =  JSON.parse(data);
-                    fetch(`${onshapeApiUrl}/webhooks`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${userAccessToken}`,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/vnd.onshape.v1+json'
-                        },
-                        body: JSON.stringify({
-                            events: [ 'onshape.model.translation.complete' ],
-                            filter: `{$UserId} = '${jsonData.userID}' && {$DocumentId} = '${documentId}'`,
-                            options: { collapseEvents: false },
-                            url: `${process.env.WEBHOOK_CALLBACK_ROOT_URL}/api/event`
-                        })
-                    }).then((resp) => {
-                        resp.json().then((json) => {
-                            if (resp.ok) {
-                                resolve(json.id);
-                            } else {
-                                reject('Failed to create webhook ' + JSON.stringify(json));
-                            }
-                        }).catch((err) => reject('Unexpected remote response: ' + err));
-                    }).catch((err) => reject('Unexpected remote response: ' + err));
+                    try {
+                        const jsonData =  JSON.parse(data);
+                        const resp = await fetch(`${onshapeApiUrl}/webhooks`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${userAccessToken}`,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/vnd.onshape.v1+json'
+                            },
+                            body: JSON.stringify({
+                                events: [ 'onshape.model.translation.complete' ],
+                                filter: `{$UserId} = '${jsonData.userID}' && {$DocumentId} = '${documentId}'`,
+                                options: { collapseEvents: false },
+                                url: `${process.env.WEBHOOK_CALLBACK_ROOT_URL}/api/event`
+                            })
+                        });
+                        const respJson = await resp.json();
+                        if (resp.ok) {
+                            resolve(respJson.id);
+                        } else {
+                            reject('Failed to create webhook ' + JSON.stringify(respJson));
+                        }
+                    } catch (err) {
+                        reject(err);
+                    }
                 }
             });
         });
@@ -59,17 +61,16 @@ module.exports = {
      * @returns {Promise<Response,string>} resolves with the response, or rejects with error text.
      */
     unregisterWebhook: (webhookID, userAccessToken) => {
-        return new Promise((resolve, reject) => {
-            fetch(`${onshapeApiUrl}/webhooks/${webhookID}`, {
+        return new Promise(async (resolve, reject) => {
+            const resp = await fetch(`${onshapeApiUrl}/webhooks/${webhookID}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${userAccessToken}` }
-            }).then((resp) => {
-                if (resp.ok) {
-                    resolve(resp);
-                } else {
-                    resp.text().then((text) => reject(text));
-                }
-            }).catch((err) => reject(err));
+            });
+            if (resp.ok) {
+                resolve(resp);
+            } else {
+                reject(await resp.text());
+            }
         });
     }
 };

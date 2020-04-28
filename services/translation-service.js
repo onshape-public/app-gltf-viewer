@@ -51,24 +51,26 @@ const defaultBody = Object.freeze({
  */
 const startTranslation = (userAccessToken, url, jsonBodyToAdd) => {
     const body = Object.assign(Object.assign({}, defaultBody), jsonBodyToAdd);
-    return new Promise((resolve, reject) => {
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${userAccessToken}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(body)
-        }).then((resp) => {
-            resp.text().then((text) => {
-                if (resp.ok) {
-                    resolve({ contentType: resp.headers.get('Content-Type'), data: text });
-                } else {
-                    reject(text);
-                }
-            }).catch((err) => reject(err))
-        }).catch((err) => reject(err));
+    return new Promise(async (resolve, reject) => {
+        try {
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${userAccessToken}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            const text = await resp.text();
+            if (resp.ok) {
+                resolve({ contentType: resp.headers.get('Content-Type'), data: text });
+            } else {
+                reject(text);
+            }
+        } catch (err) {
+            reject(err);
+        }
     });
 };
 

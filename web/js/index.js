@@ -163,12 +163,12 @@ const initThreeJsElements = function() {
 };
 
 /**
- * Execute a polling action until a particular outcome is acheived.
+ * Execute a polling action until a particular outcome is achieved.
  * 
  * @param {number} intervalInSeconds The number of seconds between each poll request.
  * @param {Function<void,Promise>} promiseProducer The function which when called will perform the HTTP request and return a Promise.
  * @param {Function<Response,boolean>} stopCondFunc The function to be called on the result of `promiseProducer`; return true to stop polling.
- * @param {Function<string,void>} then The function to be called with the response body of the last pollling request.
+ * @param {Function<string,void>} then The function to be called with the response body of the last polling request.
  */
 const poll = (intervalInSeconds, promiseProducer, stopCondFunc, then) => {
     /**
@@ -211,26 +211,26 @@ const { loadGltf } = initThreeJsElements();
 
 const $elemSelector = document.getElementById('elem-selector');
 
-$elemSelector.addEventListener('change', (evt) => {
+$elemSelector.addEventListener('change', async (evt) => {
     // Trigger translation by getting /api/gltf
     const selectedOption = evt.target.options[event.target.selectedIndex];
     if (selectedOption.innerText !== '-- Select an Item --') {
-        fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`)
-            .then((resp) => resp.json())
-            .then((json) => {
-                poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 404, (respJson) => {
-                    if (respJson.error) {
-                        console.error('Failed to obtain GLTF', err);
-                        displayError('There was an error translating the model to GLTF.');
-                    } else {
-                        console.log('Loading GLTF data...');
-                        loadGltf(respJson);
-                    }
-                });
-            }).catch((err) => {
-                console.error('Error requesting GLTF data translation', err);
+        try {
+            const resp = await fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`);
+            const json = await resp.json();
+            poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 404, (respJson) => {
+                if (respJson.error) {
+                    console.error('Failed to obtain GLTF', err);
+                    displayError('There was an error translating the model to GLTF.');
+                } else {
+                    console.log('Loading GLTF data...');
+                    loadGltf(respJson);
+                }
+            });
+        } catch (err) {
+            console.error('Error requesting GLTF data translation', err);
                 displayError(`Error requesting GLTF data translation: ${err}`);
-        });
+        }
     }
 });
     

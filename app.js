@@ -58,22 +58,20 @@ app.use('/oauthSignin', (req, res) => {
 }, (req, res) => { /* unused */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
-    redisClient.get(req.sessionID, (err, results) => {
+    redisClient.get(req.sessionID, async (err, results) => {
         if (err) {
             res.status(500).json({ error: err });
         } else if (results != null) {
             const state = JSON.parse(results);
-            fetch(`${onshapeApiUrl}/users/sessioninfo`, {
+            const sessioninfoResp = await fetch(`${onshapeApiUrl}/users/sessioninfo`, {
                 headers: {
                     'Authorization': `Bearer ${req.user.accessToken}`,
                     'Accept': 'application/vnd.onshape.v1+json'
-                }})
-                    .then((sessioninfoResp) => sessioninfoResp.json())
-                    .then((sessioninfoRespJson) => sessioninfoRespJson.id)
-                    .then((userID) => {
-                        state.userID = userID;
-                        redisClient.set(req.sessionID, JSON.stringify(state));
-                });
+                }
+            });
+            const sessioninfoRespJson = await sessioninfoResp.json();
+            state.userID = sessioninfoRespJson.id;
+            redisClient.set(req.sessionID, JSON.stringify(state));
             res.redirect(`/?documentId=${state.docId}&workspaceId=${state.workId}&elementId=${state.elId}`);
         } else {
             res.status(500).json({ error: 'No session found.' });
