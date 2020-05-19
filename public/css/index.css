@@ -3,11 +3,3 @@ select {
     padding-bottom: 20px;
     margin-bottom: 20px;
 }
-
-#gltf-container {
-    display: flex;
-}
-
-#gltf-viewport {
-    flex: 1 1 auto;
-}
