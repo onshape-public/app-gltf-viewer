@@ -59,9 +59,7 @@ apiRouter.get('/gltf', async (req, res) => {
     try {
         const resp = await (partId ? TranslationService.translatePart(req.user.accessToken, gltfElemId, partId, translationParams)
             : TranslationService.translateElement(req.user.accessToken, gltfElemId, translationParams));
-        const data = (await resp.json()).data;
-        const contentType = resp.headers.get('Content-Type');
-        res.status(200).contentType(contentType).send(data);
+        res.status(200).contentType(resp.contentType).send(resp.data);
     } catch (err) {
         console.log(`GET /gltf: error: ${err}`);
         res.status(500).json({ error: err });
