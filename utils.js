@@ -20,8 +20,10 @@ module.exports = {
             const resp = await fetch(normalizedUrl, { headers: { Authorization: `Bearer ${req.user.accessToken}` }});
             const data = await resp.text();
             const contentType = resp.headers.get('Content-Type');
+            console.log(`forwardRequestToOnshape: info: sending ${contentType} data ${data}`);
             res.status(200).contentType(contentType).send(data);
         } catch (err) {
+            console.error(`forwardRequestToOnshape: error: ${err}`);
             res.status(500).json({ error: err });
         }
     }
