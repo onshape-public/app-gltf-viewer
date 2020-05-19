@@ -30,9 +30,11 @@ const initThreeJsElements = function() {
     const directionalLight = new DirectionalLight(0xffffff, 1);
     directionalLight.position.set(0.5, 0, 0.866);
     camera.add(directionalLight);
+    
+    const $viewport = document.getElementById('gltf-viewport');
 
     const renderer = new WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize($viewport.offsetWidth, $viewport.offsetHeight);
     renderer.setClearColor(scene.fog.color, 1);
     renderer.shadowMap.enabled = true;
     
@@ -50,13 +52,14 @@ const initThreeJsElements = function() {
     controls.noZoom = false;
     controls.noPan = false;
 
-    const $viewport = document.getElementById('gltf-viewport');
     $viewport.appendChild(renderer.domElement);
 
     window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        const width = $viewport.offsetWidth,
+            height = $viewport.offsetHeight;
+        camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(width, height);
         render(renderer, scene, camera);
         controls.handleResize();
     }, false);
