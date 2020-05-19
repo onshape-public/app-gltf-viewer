@@ -79,7 +79,6 @@ apiRouter.get('/gltf', async (req, res) => {
  */
 apiRouter.get('/gltf/:tid', async (req, res) => {
     redisClient.get(req.params.tid, async (redisErr, results) => {
-        console.log(`GET /gltf/${req.params.tid}: redis results: ${results}`);
         if (redisErr) {
             res.status(500).json({ error: redisErr });
         } else if (!results) {
