@@ -78,7 +78,7 @@ apiRouter.get('/gltf', async (req, res) => {
  */
 apiRouter.get('/gltf/:tid', async (req, res) => {
     redisClient.get(req.params.tid, async (redisErr, results) => {
-        console.log(`Get /gltf/:tid: results: ${results}`);
+        console.log(`GET /gltf/${req.params.tid}: redis results: ${results}`);
         if (redisErr) {
             res.status(500).json({ error: redisErr });
         } else if (!results) {
@@ -109,6 +109,7 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
 apiRouter.post('/event', (req, res) => {
     if (req.body.event === 'onshape.model.translation.complete') {
         // Save in Redis so we can return to client later (& unregister the webhook).
+        console.log('POST /event: received notification that translation is complete');
         redisClient.set(req.body.translationId, req.body.webhookId);
     }
     res.status(200).send();
