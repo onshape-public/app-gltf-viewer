@@ -63,6 +63,7 @@ apiRouter.get('/gltf', async (req, res) => {
         const contentType = resp.headers.get('Content-Type');
         res.status(200).contentType(contentType).send(data);
     } catch (err) {
+        console.log(`GET /gltf: error: ${err}`);
         res.status(500).json({ error: err });
     }
 });
