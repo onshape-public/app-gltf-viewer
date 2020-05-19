@@ -34,7 +34,7 @@ const initThreeJsElements = function() {
     const $viewport = document.getElementById('gltf-viewport');
 
     const renderer = new WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight - document.getElementById('elem-selector').offsetHeight, false);
+    renderer.setSize(window.innerWidth, window.innerHeight - document.getElementById('elem-selector').offsetHeight);
     renderer.setClearColor(scene.fog.color, 1);
     renderer.shadowMap.enabled = true;
     
@@ -59,7 +59,7 @@ const initThreeJsElements = function() {
             height = window.innerHeight - document.getElementById('elem-selector').offsetHeight;
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        renderer.setSize(width, height, false);
+        renderer.setSize(width, height);
         render(renderer, scene, camera);
         controls.handleResize();
     }, false);
