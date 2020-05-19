@@ -218,6 +218,7 @@ $elemSelector.addEventListener('change', async (evt) => {
         try {
             const resp = await fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`);
             const json = await resp.json();
+            console.log('trans json', json);
             poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 404, (respJson) => {
                 if (respJson.error) {
                     console.error('Failed to obtain GLTF', err);
