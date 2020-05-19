@@ -39,7 +39,7 @@ apiRouter.get('/parts', (req, res) => {
  *      -or-
  *      -> 500, { error: '...' }
  */
-apiRouter.get('/gltf', (req, res) => {
+apiRouter.get('/gltf', async (req, res) => {
     // Extract the necessary IDs from the querystring
     const did = req.query.documentId,
         wid = req.query.workspaceId,
@@ -78,7 +78,7 @@ apiRouter.get('/gltf', (req, res) => {
  *      -> 404 (which may mean that the translation is still being processed)
  */
 apiRouter.get('/gltf/:tid', async (req, res) => {
-    redisClient.get(req.params.tid, (redisErr, results) => {
+    redisClient.get(req.params.tid, async (redisErr, results) => {
         if (redisErr) {
             res.status(500).json({ error: redisErr });
         } else if (!results) {
