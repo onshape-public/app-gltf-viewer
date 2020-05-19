@@ -109,9 +109,9 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
  *      -> 200
  */
 apiRouter.post('/event', (req, res) => {
+    console.log(`[DEBUG] POST /event: request body: ${req.body}`);
     if (req.body.event === 'onshape.model.translation.complete') {
         // Save in Redis so we can return to client later (& unregister the webhook).
-        console.log('POST /event: received notification that translation is complete');
         redisClient.set(req.body.translationId, req.body.webhookId);
     }
     res.status(200).send();
