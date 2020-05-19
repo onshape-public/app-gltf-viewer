@@ -3,3 +3,7 @@ select {
     padding-bottom: 20px;
     margin-bottom: 20px;
 }
+
+#gltf-viewport {
+    height: calc(100% - 19px);
+}
