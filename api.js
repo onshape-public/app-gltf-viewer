@@ -47,8 +47,7 @@ apiRouter.get('/gltf', async (req, res) => {
         partId = req.query.partId;
     
     WebhookService.registerWebhook(req.sessionID, req.user.accessToken, did)
-        .then((id) => console.log(`GET /gltf: Registered webhook: ${id}`))
-        .catch((err) => console.error(`GET /gltf: Failed to register webhook: ${err}`));
+        .catch((err) => console.error(`Failed to register webhook: ${err}`));
     
     const translationParams = {
         documentId: did,
@@ -109,7 +108,6 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
  *      -> 200
  */
 apiRouter.post('/event', (req, res) => {
-    console.log(`[DEBUG] POST /event: request body: ${req.body}`);
     if (req.body.event === 'onshape.model.translation.complete') {
         // Save in Redis so we can return to client later (& unregister the webhook).
         redisClient.set(req.body.translationId, req.body.webhookId);
