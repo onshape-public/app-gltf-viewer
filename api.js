@@ -92,7 +92,7 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
             if (transJson.requestState === 'FAILED') {
                 res.status(500).json({ error: transJson.failureReason});
             } else {
-                forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, req);
+                forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, req, res);
             }
             const webhookID = results;
             WebhookService.unregisterWebhook(webhookID, req.user.accessToken)
