@@ -128,7 +128,6 @@ const initThreeJsElements = function() {
             camera.updateProjectionMatrix();
             controls.target = center;
             controls.maxDistance = cameraToFarEdge * 2;
-            controls.saveState();
             // TODO: /TESTING
             
             gltfScene.name = 'gltf_scene';
