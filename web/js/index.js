@@ -34,7 +34,7 @@ const initThreeJsElements = function() {
     const $viewport = document.getElementById('gltf-viewport');
 
     const renderer = new WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, (window.innerHeight - document.getElementById('elem-selector').offsetHeight), false);
+    renderer.setSize(window.innerWidth, (window.innerHeight - document.getElementById('elem-selector').offsetHeight) * 0.9, false);
     renderer.setClearColor(scene.fog.color, 1);
     renderer.shadowMap.enabled = true;
     
@@ -53,16 +53,18 @@ const initThreeJsElements = function() {
     controls.noPan = false;
 
     $viewport.appendChild(renderer.domElement);
-
-    window.addEventListener('resize', () => {
+    
+    const handleResize = () => {
         const width = window.innerWidth,
             height = (window.innerHeight - document.getElementById('elem-selector').offsetHeight);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        renderer.setSize(width, height, false);
+        renderer.setSize(width, height * 0.9, false);
         render(renderer, scene, camera);
         controls.handleResize();
-    }, false);
+    };
+
+    window.addEventListener('resize', handleResize, false);
     
     /**
      * Apply an operation to all mesh children of the given element.
@@ -143,6 +145,8 @@ const initThreeJsElements = function() {
     };
 
     const gltfLoader = new GLTFLoader();
+    
+    handleResize();
 
     return {
         /**
