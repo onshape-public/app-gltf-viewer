@@ -115,7 +115,14 @@ const initThreeJsElements = function() {
             camera.lookAt(center);
             
             // TODO: TESTING
-            const offset = 1.25;
+            const boxSize = box.getSize();
+            camera.position.x = boxSize.x * 2;
+            camera.position.y = boxSize.y * 2;
+            camera.position.z = boxSize.z * 2;
+            // TODO: /TESTING
+            
+            // TODO: TESTING
+            /*const offset = 1.25;
             const boxSize = box.getSize();
             const maxDim = Math.max(boxSize.x, boxSize.y, boxSize.z);
             const fov = camera.fov * (Math.PI / 180);
@@ -127,7 +134,7 @@ const initThreeJsElements = function() {
             camera.far = cameraToFarEdge * 3;
             camera.updateProjectionMatrix();
             controls.target = center;
-            controls.maxDistance = cameraToFarEdge * 2;
+            controls.maxDistance = cameraToFarEdge * 2;*/
             // TODO: /TESTING
             
             gltfScene.name = 'gltf_scene';
