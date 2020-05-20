@@ -54,6 +54,9 @@ const initThreeJsElements = function() {
 
     $viewport.appendChild(renderer.domElement);
     
+    /**
+     * Handles resizing the window.
+     */
     const handleResize = () => {
         const width = window.innerWidth,
             height = (window.innerHeight - document.getElementById('elem-selector').offsetHeight);
@@ -146,6 +149,8 @@ const initThreeJsElements = function() {
 
     const gltfLoader = new GLTFLoader();
     
+    // Without calling `handleResize`, the background is black initially.
+    // (Changes to white when something is rendered.)
     handleResize();
 
     return {
