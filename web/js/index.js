@@ -162,6 +162,7 @@ const initThreeJsElements = function() {
         loadGltf: (gltfData) => {
             gltfLoader.parse(gltfData, '',
                 (gltf) => { // onLoad
+                    document.body.style.cursor = 'default';
                     const gltfScene = gltf.scene || gltf.scenes[0];
                     setGltfContents(gltfScene);
                     animate();
@@ -228,6 +229,7 @@ $elemSelector.addEventListener('change', async (evt) => {
     const selectedOption = evt.target.options[event.target.selectedIndex];
     if (selectedOption.innerText !== '-- Select an Item --') {
         try {
+            document.body.style.cursor = 'progress';
             const resp = await fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`);
             const json = await resp.json();
             poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 404, (respJson) => {
