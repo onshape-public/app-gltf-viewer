@@ -4,6 +4,10 @@ select {
     margin-bottom: 20px;
 }
 
+#gltf-viewport {
+    height: 100%;
+}
+
 canvas {
     width: 100%;
 }
