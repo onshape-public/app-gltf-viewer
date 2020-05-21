@@ -292,7 +292,7 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 child.innerText = `Element - ${elem.name}`;
                 $elemSelector.appendChild(child);
                 // Get the Parts of each element for the dropdown
-                fetch(`/api/elements/${elem.id}/parts`, { headers: { 'Accept': 'application/json' }})
+                fetch(`/api/elements/${elem.id}/parts${window.location.search}`, { headers: { 'Accept': 'application/json' }})
                     .then((partsResp) => partsResp.json())
                     .then((partsJson) => {
                         console.log('[DEBUG] partsJson', partsJson);
