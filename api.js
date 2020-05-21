@@ -28,6 +28,7 @@ apiRouter.get('/elements', (req, res) => {
  *      -> 500, { error: '...' }
  */
 apiRouter.get('/elements/:eid/parts', (req, res) => {
+    console.log(`[DEBUG] ${onshapeApiUrl}/parts/d/${req.query.documentId}/w/${req.query.workspaceId}/e/${req.params.eid}`)
     forwardRequestToOnshape(`${onshapeApiUrl}/parts/d/${req.query.documentId}/w/${req.query.workspaceId}/e/${req.params.eid}`, req, res);
 });
 
