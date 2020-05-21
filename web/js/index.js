@@ -250,7 +250,7 @@ $elemSelector.addEventListener('change', async (evt) => {
 });
     
 // Fetch elements for dropdown
-fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'application/json' } })
+/*fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'application/json' } })
     .then((resp) => { return resp.json() })
     .then((json) => {
         for (const elem of json) {
@@ -279,4 +279,33 @@ fetch(`/api/parts${window.location.search}`, { headers: { 'Accept': 'application
     }).catch((err) => {
         console.error('Error while requesting document parts', err);
         displayError(`Error while requesting document parts: ${err}`);
+    });*/
+
+// Get the Elements for the dropdown
+fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'application/json' } })
+    .then((resp) => { return resp.json() })
+    .then((json) => {
+        for (const elem of json) {
+            if (elem.elementType === 'PARTSTUDIO') {
+                const child = document.createElement('option');
+                child.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
+                child.innerText = `Element - ${elem.name}`;
+                $elemSelector.appendChild(child);
+                // Get the Parts of each element for the dropdown
+                fetch(`/api/elements/${elem.id}/parts`, { headers: { 'Accept': 'application/json' }})
+                    .then((partsResp) => partsResp.json())
+                    .then((partsJson) => {
+                        const partChild = document.createElement('option');
+                        partChild.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
+                        partChild.innerText = `Part - ${elem.name} - ${part.name}`;
+                        $elemSelector.appendChild(partChild);
+                    }).catch((err) => {
+                        console.error('Error while requesting element parts', err);
+                        displayError(`Error while requesting element parts: ${err}`);
+                    });
+            }
+        }
+    }).catch((err) => {
+        console.error('Error while requesting document elements', err);
+        displayError(`Error while requesting document elements: ${err}`);
     });

@@ -20,6 +20,18 @@ apiRouter.get('/elements', (req, res) => {
 });
 
 /**
+ * Get the Parts of the given Element in the current document/workspace.
+ * 
+ * GET /api/elements/:eid/parts
+ *      -> 200, [ ...parts ]
+ *      -or-
+ *      -> 500, { error: '...' }
+ */
+apiRouter.get('/elements/:eid/parts', (req, res) => {
+    forwardRequestToOnshape(`${onshapeApiUrl}/parts/d/${req.query.documentId}/w/${req.query.workspaceId}/e/${req.params.eid}`, req, res);
+});
+
+/**
  * Get the Parts of the current document/workspace.
  * 
  * GET /api/parts
