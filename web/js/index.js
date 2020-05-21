@@ -15,6 +15,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 
 /**
+ * The <select> element that allows the user to pick an item to translate.
+ */
+const $elemSelector = document.getElementById('elem-selector');
+
+/**
  * Initialize the THREE elements needed for rendering the GLTF data.
  * 
  * @returns {object} An object containing the `loadGltf` function.
@@ -34,7 +39,6 @@ const initThreeJsElements = function() {
     const $viewport = document.getElementById('gltf-viewport');
 
     const renderer = new WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, (window.innerHeight - document.getElementById('elem-selector').offsetHeight) * 0.9, false);
     renderer.setClearColor(scene.fog.color, 1);
     renderer.shadowMap.enabled = true;
     
@@ -55,14 +59,19 @@ const initThreeJsElements = function() {
     $viewport.appendChild(renderer.domElement);
     
     /**
+     * This is how much we scale the height of the scene by to make it fit the window.
+     */
+    const heightScale = 0.9;
+    
+    /**
      * Handles resizing the window.
      */
     const handleResize = () => {
         const width = window.innerWidth,
-            height = (window.innerHeight - document.getElementById('elem-selector').offsetHeight);
+            height = (window.innerHeight - $elemSelector.offsetHeight) * heightScale;
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        renderer.setSize(width, height * 0.9, false);
+        renderer.setSize(width, height, false);
         render(renderer, scene, camera);
         controls.handleResize();
     };
@@ -169,7 +178,6 @@ const initThreeJsElements = function() {
                     animate();
                 },
                 (err) => { // onError
-                    console.error('Error loading GLTF:', err);
                     displayError(`Error loading GLTF: ${err}`);
                 });
         }
@@ -208,6 +216,7 @@ const poll = (intervalInSeconds, promiseProducer, stopCondFunc, then) => {
  * @param {string} msg The error message to be displayed.
  */
 const displayError = (msg) => {
+    console.log('Error:', msg);
     const $viewport = document.getElementById('gltf-viewport');
     const $msgElem = document.createElement('p');
     $msgElem.style.color = 'red';
@@ -223,8 +232,6 @@ if (!WEBGL.isWebGLAvailable()) {
 
 const { loadGltf } = initThreeJsElements();
 
-const $elemSelector = document.getElementById('elem-selector');
-
 $elemSelector.addEventListener('change', async (evt) => {
     // Trigger translation by getting /api/gltf
     const selectedOption = evt.target.options[event.target.selectedIndex];
@@ -235,7 +242,6 @@ $elemSelector.addEventListener('change', async (evt) => {
             const json = await resp.json();
             poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 404, (respJson) => {
                 if (respJson.error) {
-                    console.error('Failed to obtain GLTF', err);
                     displayError('There was an error translating the model to GLTF.');
                 } else {
                     console.log('Loading GLTF data...');
@@ -243,7 +249,6 @@ $elemSelector.addEventListener('change', async (evt) => {
                 }
             });
         } catch (err) {
-            console.error('Error requesting GLTF data translation', err);
             displayError(`Error requesting GLTF data translation: ${err}`);
         }
     }
@@ -270,12 +275,10 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                             $elemSelector.appendChild(partChild);
                         }
                     }).catch((err) => {
-                        console.error('Error while requesting element parts', err);
                         displayError(`Error while requesting element parts: ${err}`);
                     });
             }
         }
     }).catch((err) => {
-        console.error('Error while requesting document elements', err);
         displayError(`Error while requesting document elements: ${err}`);
     });
