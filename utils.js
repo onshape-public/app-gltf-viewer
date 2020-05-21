@@ -22,7 +22,7 @@ module.exports = {
             const resp = await fetch(normalizedUrl, { headers: { Authorization: `Bearer ${req.user.accessToken}` }});
             const data = await resp.text();
             const contentType = resp.headers.get('Content-Type');
-            res.status(200).contentType(contentType).send(data);
+            res.status(resp.status).contentType(contentType).send(data);
         } catch (err) {
             res.status(500).json({ error: err });
         }
