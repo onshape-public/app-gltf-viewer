@@ -295,6 +295,7 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 fetch(`/api/elements/${elem.id}/parts`, { headers: { 'Accept': 'application/json' }})
                     .then((partsResp) => partsResp.json())
                     .then((partsJson) => {
+                        console.log('[DEBUG] partsJson', partsJson);
                         for (const part of partsJson) {
                             const partChild = document.createElement('option');
                             partChild.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
