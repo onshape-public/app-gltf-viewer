@@ -256,8 +256,8 @@ $elemSelector.addEventListener('change', async (evt) => {
 
 // Get the Elements for the dropdown
 fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'application/json' } })
-    .then((resp) => { return resp.json() })
-    .then((json) => {
+    .then((resp) => resp.json())
+    .then(async (json) => {
         for (const elem of json) {
             if (elem.elementType === 'PARTSTUDIO') {
                 const child = document.createElement('option');
@@ -265,18 +265,18 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 child.innerText = `Element - ${elem.name}`;
                 $elemSelector.appendChild(child);
                 // Get the Parts of each element for the dropdown
-                fetch(`/api/elements/${elem.id}/parts${window.location.search}`, { headers: { 'Accept': 'application/json' }})
-                    .then((partsResp) => partsResp.json())
-                    .then((partsJson) => {
-                        for (const part of partsJson) {
-                            const partChild = document.createElement('option');
-                            partChild.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
-                            partChild.innerText = `Part - ${elem.name} - ${part.name}`;
-                            $elemSelector.appendChild(partChild);
-                        }
-                    }).catch((err) => {
-                        displayError(`Error while requesting element parts: ${err}`);
-                    });
+                try {
+                    const partsResp = await fetch(`/api/elements/${elem.id}/parts${window.location.search}`, { headers: { 'Accept': 'application/json' }});
+                    const partsJson = await partsResp.json();
+                    for (const part of partsJson) {
+                        const partChild = document.createElement('option');
+                        partChild.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
+                        partChild.innerText = `Part - ${elem.name} - ${part.name}`;
+                        $elemSelector.appendChild(partChild);
+                    }
+                } catch(err) {
+                    displayError(`Error while requesting element parts: ${err}`);
+                }
             }
         }
     }).catch((err) => {
