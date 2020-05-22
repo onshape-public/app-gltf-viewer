@@ -87,6 +87,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
 });
 
-app.use('/api', require('./routes/api'));
+app.use('/api', require('./api'));
 
 module.exports = app;

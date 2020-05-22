@@ -8,7 +8,7 @@ This section outlines how to deploy and configure the application on Heroku. If 
 
 These instructions assume that the following utilities are installed: git, npm, and [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) (e.g. `brew tap heroku/brew && brew install heroku` on macOS or `sudo snap install --classic heroku` on Linux distributes that support Snap applications).
 
-1. Make a bare clone of the repository: `git clone --bare https://github.com/onshape-public/gltf-viewer.git`.
+1. Make a bare clone of the repository: `git clone --bare https://github.com/onshape-public/app-gltf-viewer.git`.
 1. Push to a new mirror repository: `cd gltf-viewer.git && git push --mirror https://github.com/youruser/my-gltf-viewer.git`.
 1. Clean up the temporary repository: `cd .. && rm -rf gltf-viewer.git`.
 1. Clone your newly mirrored repository: `https://github.com/youruser/my-gltf-viewer.git`.
@@ -33,8 +33,8 @@ iframe URL | https://url-from-heroku-create.herokuapp.com/oauthSignin
 8. Create a RedisTOGO add-on for you Heroku application: `heroku addons:create redistogo`.
 1. Configure the necessary environment variables:
 ```Shell
-heroku config:set API_URL https://cad.onshape.com/api
-heroku config:set OAUTH_CALLBACK_URL https://url-from-heroku-create.herokuapp.com/oauthRedirect
+heroku config:set API_URL=https://cad.onshape.com/api
+heroku config:set OAUTH_CALLBACK_URL=https://url-from-heroku-create.herokuapp.com/oauthRedirect
 heroku config:set OAUTH_CLIENT_ID=client-id-from-created-app-in-dev-portal
 heroku config:set OAUTH_CLIENT_SECRET=client-secret-from-created-app-in-dev-portal
 heroku config:set OAUTH_URL=https://oauth.onshape.com

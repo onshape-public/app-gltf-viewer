@@ -20,6 +20,18 @@ apiRouter.get('/elements', (req, res) => {
 });
 
 /**
+ * Get the Parts of the given Element in the current document/workspace.
+ * 
+ * GET /api/elements/:eid/parts
+ *      -> 200, [ ...parts ]
+ *      -or-
+ *      -> 500, { error: '...' }
+ */
+apiRouter.get('/elements/:eid/parts', (req, res) => {
+    forwardRequestToOnshape(`${onshapeApiUrl}/parts/d/${req.query.documentId}/w/${req.query.workspaceId}/e/${req.params.eid}`, req, res);
+});
+
+/**
  * Get the Parts of the current document/workspace.
  * 
  * GET /api/parts
@@ -39,14 +51,15 @@ apiRouter.get('/parts', (req, res) => {
  *      -or-
  *      -> 500, { error: '...' }
  */
-apiRouter.get('/gltf', (req, res) => {
+apiRouter.get('/gltf', async (req, res) => {
     // Extract the necessary IDs from the querystring
     const did = req.query.documentId,
         wid = req.query.workspaceId,
         gltfElemId = req.query.gltfElementId,
         partId = req.query.partId;
     
-    WebhookService.registerWebhook(req.sessionID, req.user.accessToken, did);
+    WebhookService.registerWebhook(req.sessionID, req.user.accessToken, did)
+        .catch((err) => console.error(`Failed to register webhook: ${err}`));
     
     const translationParams = {
         documentId: did,
@@ -59,9 +72,7 @@ apiRouter.get('/gltf', (req, res) => {
     try {
         const resp = await (partId ? TranslationService.translatePart(req.user.accessToken, gltfElemId, partId, translationParams)
             : TranslationService.translateElement(req.user.accessToken, gltfElemId, translationParams));
-        const data = (await resp.json()).data;
-        const contentType = resp.headers.get('Content-Type');
-        res.status(200).contentType(contentType).send(data);
+        res.status(200).contentType(resp.contentType).send(resp.data);
     } catch (err) {
         res.status(500).json({ error: err });
     }
@@ -78,7 +89,7 @@ apiRouter.get('/gltf', (req, res) => {
  *      -> 404 (which may mean that the translation is still being processed)
  */
 apiRouter.get('/gltf/:tid', async (req, res) => {
-    redisClient.get(req.params.tid, (redisErr, results) => {
+    redisClient.get(req.params.tid, async (redisErr, results) => {
         if (redisErr) {
             res.status(500).json({ error: redisErr });
         } else if (!results) {
@@ -90,13 +101,13 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
             if (transJson.requestState === 'FAILED') {
                 res.status(500).json({ error: transJson.failureReason});
             } else {
-                forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, req);
+                forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, req, res);
             }
+            const webhookID = results;
+            WebhookService.unregisterWebhook(webhookID, req.user.accessToken)
+                .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
+                .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
         }
-        const webhookID = results;
-        WebhookService.unregisterWebhook(webhookID, req.user.accessToken)
-            .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
-            .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
     });
 });
 

@@ -15,6 +15,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 
 /**
+ * The <select> element that allows the user to pick an item to translate.
+ */
+const $elemSelector = document.getElementById('elem-selector');
+
+/**
  * Initialize the THREE elements needed for rendering the GLTF data.
  * 
  * @returns {object} An object containing the `loadGltf` function.
@@ -30,9 +35,10 @@ const initThreeJsElements = function() {
     const directionalLight = new DirectionalLight(0xffffff, 1);
     directionalLight.position.set(0.5, 0, 0.866);
     camera.add(directionalLight);
+    
+    const $viewport = document.getElementById('gltf-viewport');
 
     const renderer = new WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(scene.fog.color, 1);
     renderer.shadowMap.enabled = true;
     
@@ -50,16 +56,27 @@ const initThreeJsElements = function() {
     controls.noZoom = false;
     controls.noPan = false;
 
-    const $viewport = document.getElementById('gltf-viewport');
     $viewport.appendChild(renderer.domElement);
-
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
+    
+    /**
+     * This is how much we scale the height of the scene by to make it fit the window.
+     */
+    const heightScale = 0.9;
+    
+    /**
+     * Handles resizing the window.
+     */
+    const handleResize = () => {
+        const width = window.innerWidth,
+            height = (window.innerHeight - $elemSelector.offsetHeight) * heightScale;
+        camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(width, height, false);
         render(renderer, scene, camera);
         controls.handleResize();
-    }, false);
+    };
+
+    window.addEventListener('resize', handleResize, false);
     
     /**
      * Apply an operation to all mesh children of the given element.
@@ -101,9 +118,10 @@ const initThreeJsElements = function() {
             camera.far = size * 100;
             camera.updateProjectionMatrix();
             camera.position.copy(center);
-            camera.position.x += size / 2.0;
-            camera.position.y += size / 5.0;
-            camera.position.z += size / 2.0;
+            const boxSize = box.getSize();
+            camera.position.x = boxSize.x * 2;
+            camera.position.y = boxSize.y * 2;
+            camera.position.z = boxSize.z * 2;
             camera.lookAt(center);
             
             gltfScene.name = 'gltf_scene';
@@ -140,6 +158,10 @@ const initThreeJsElements = function() {
     };
 
     const gltfLoader = new GLTFLoader();
+    
+    // Without calling `handleResize`, the background is black initially.
+    // (Changes to white when something is rendered.)
+    handleResize();
 
     return {
         /**
@@ -150,12 +172,12 @@ const initThreeJsElements = function() {
         loadGltf: (gltfData) => {
             gltfLoader.parse(gltfData, '',
                 (gltf) => { // onLoad
+                    document.body.style.cursor = 'default';
                     const gltfScene = gltf.scene || gltf.scenes[0];
                     setGltfContents(gltfScene);
                     animate();
                 },
                 (err) => { // onError
-                    console.error('Error loading GLTF:', err);
                     displayError(`Error loading GLTF: ${err}`);
                 });
         }
@@ -194,6 +216,7 @@ const poll = (intervalInSeconds, promiseProducer, stopCondFunc, then) => {
  * @param {string} msg The error message to be displayed.
  */
 const displayError = (msg) => {
+    console.log('Error:', msg);
     const $viewport = document.getElementById('gltf-viewport');
     const $msgElem = document.createElement('p');
     $msgElem.style.color = 'red';
@@ -209,18 +232,16 @@ if (!WEBGL.isWebGLAvailable()) {
 
 const { loadGltf } = initThreeJsElements();
 
-const $elemSelector = document.getElementById('elem-selector');
-
 $elemSelector.addEventListener('change', async (evt) => {
     // Trigger translation by getting /api/gltf
     const selectedOption = evt.target.options[event.target.selectedIndex];
     if (selectedOption.innerText !== '-- Select an Item --') {
         try {
+            document.body.style.cursor = 'progress';
             const resp = await fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`);
             const json = await resp.json();
             poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 404, (respJson) => {
                 if (respJson.error) {
-                    console.error('Failed to obtain GLTF', err);
                     displayError('There was an error translating the model to GLTF.');
                 } else {
                     console.log('Loading GLTF data...');
@@ -228,40 +249,36 @@ $elemSelector.addEventListener('change', async (evt) => {
                 }
             });
         } catch (err) {
-            console.error('Error requesting GLTF data translation', err);
-                displayError(`Error requesting GLTF data translation: ${err}`);
+            displayError(`Error requesting GLTF data translation: ${err}`);
         }
     }
 });
-    
-// Fetch elements for dropdown
+
+// Get the Elements for the dropdown
 fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'application/json' } })
-    .then((resp) => { return resp.json() })
-    .then((json) => {
+    .then((resp) => resp.json())
+    .then(async (json) => {
         for (const elem of json) {
             if (elem.elementType === 'PARTSTUDIO') {
                 const child = document.createElement('option');
                 child.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
                 child.innerText = `Element - ${elem.name}`;
                 $elemSelector.appendChild(child);
+                // Get the Parts of each element for the dropdown
+                try {
+                    const partsResp = await fetch(`/api/elements/${elem.id}/parts${window.location.search}`, { headers: { 'Accept': 'application/json' }});
+                    const partsJson = await partsResp.json();
+                    for (const part of partsJson) {
+                        const partChild = document.createElement('option');
+                        partChild.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
+                        partChild.innerText = `Part - ${elem.name} - ${part.name}`;
+                        $elemSelector.appendChild(partChild);
+                    }
+                } catch(err) {
+                    displayError(`Error while requesting element parts: ${err}`);
+                }
             }
         }
     }).catch((err) => {
-        console.error('Error while requesting document elements', err);
         displayError(`Error while requesting document elements: ${err}`);
-    });
-
-// Fetch parts for dropdown
-fetch(`/api/parts${window.location.search}`, { headers: { 'Accept': 'application/json' } })
-    .then((resp) => { return resp.json() })
-    .then((json) => {
-        for (const part of json) {
-            const child = document.createElement('option');
-            child.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
-            child.innerText = `Part - ${part.name}`;
-            $elemSelector.appendChild(child);
-        }
-    }).catch((err) => {
-        console.error('Error while requesting document parts', err);
-        displayError(`Error while requesting document parts: ${err}`);
     });
