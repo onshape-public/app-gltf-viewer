@@ -73,20 +73,9 @@ apiRouter.get('/gltf', async (req, res) => {
         const resp = await (partId ? TranslationService.translatePart(req.user.accessToken, gltfElemId, partId, translationParams)
             : TranslationService.translateElement(req.user.accessToken, gltfElemId, translationParams));
         // Store the tid in Redis so we know that it's being processed; empty string means 'recorded, but no result yet'.
-        console.log('[DEBUG] resp.data:', resp.data);
-        console.log('[DEBUG] resp.data["id"]:', resp.data["id"]);
-        if (!resp.data.hasOwnProperty('id')) {
-            console.error('[DEBUG] resp.data has no property "id"');
+        if (resp.contentType.indexOf('json') >= 0) {
+            redisClient.set(JSON.parse(resp.data).id, 'in-progress');
         }
-        for (const p in resp.data) {
-            if (resp.data.hasOwnProperty(p)) {
-                console.log(`[DEBUG] ${p} : ${resp.data[p]}`);
-            }
-        }
-        redisClient.set(resp.data.id, 'in-progress', (err, data) => {
-            if (err) console.error('[DEBUG] error:', err);
-            else console.log('[DEBUG] data:', data);
-        });
         res.status(200).contentType(resp.contentType).send(resp.data);
     } catch (err) {
         console.log(`[DEBUG] GET /gltf: error: ${err}`);
