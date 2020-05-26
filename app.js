@@ -48,6 +48,7 @@ passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
 app.use('/oauthSignin', (req, res) => {
+    console.log(`[DEBUG] req.query = ${JSON.stringify(req.query)}`);
     const state = {
         docId: req.query.documentId,
         workId: req.query.workspaceId,
