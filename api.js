@@ -73,7 +73,7 @@ apiRouter.get('/gltf', async (req, res) => {
         const resp = await (partId ? TranslationService.translatePart(req.user.accessToken, gltfElemId, partId, translationParams)
             : TranslationService.translateElement(req.user.accessToken, gltfElemId, translationParams));
         // Store the tid in Redis so we know that it's being processed; empty string means 'recorded, but no result yet'.
-        redisClient.set(resp.data.id, '');
+        redisClient.set(resp.data.id, 'in-progress');
         res.status(200).contentType(resp.contentType).send(resp.data);
     } catch (err) {
         console.log(`GET /gltf: error: ${err}`);
@@ -99,7 +99,7 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
             // No record in Redis => not a valid ID
             res.status(404).end();
         } else {
-            if ('' === results) {
+            if ('in-progress' === results) {
                 // Valid ID, but results are not ready yet.
                 res.status(202).end();
             } else {
