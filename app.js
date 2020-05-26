@@ -59,6 +59,7 @@ app.use('/oauthSignin', (req, res) => {
 }, (req, res) => { /* unused */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
+    console.log(`[DEBUG] req.query = ${req.query}`);
     redisClient.get(req.sessionID, async (err, results) => {
         if (err) {
             res.status(500).json({ error: err });
