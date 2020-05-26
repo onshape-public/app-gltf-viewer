@@ -74,6 +74,7 @@ app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/
             redisClient.set(req.sessionID, JSON.stringify(state));
             res.redirect(`/?documentId=${state.docId}&workspaceId=${state.workId}&elementId=${state.elId}`);
         } else {
+            console.error(`No session found for session ID ${req.sessionID}`);
             res.status(500).json({ error: 'No session found.' });
         }
     });
