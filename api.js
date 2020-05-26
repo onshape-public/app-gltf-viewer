@@ -72,6 +72,8 @@ apiRouter.get('/gltf', async (req, res) => {
     try {
         const resp = await (partId ? TranslationService.translatePart(req.user.accessToken, gltfElemId, partId, translationParams)
             : TranslationService.translateElement(req.user.accessToken, gltfElemId, translationParams));
+        // Store the tid in Redis so we know that it's being processed; empty string means 'recorded, but no result yet'.
+        redisClient.set(resp.data.id, '');
         res.status(200).contentType(resp.contentType).send(resp.data);
     } catch (err) {
         console.log(`GET /gltf: error: ${err}`);
@@ -93,21 +95,27 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
     redisClient.get(req.params.tid, async (redisErr, results) => {
         if (redisErr) {
             res.status(500).json({ error: redisErr });
-        } else if (!results) {
+        } else if (results === null || results === undefined) {
+            // No record in Redis => not a valid ID
             res.status(404).end();
         } else {
-            // GLTF data is ready
-            const transResp = await fetch(`${onshapeApiUrl}/translations/${req.params.tid}`, { headers: { 'Authorization': `Bearer ${req.user.accessToken}` } });
-            const transJson = await transResp.json();
-            if (transJson.requestState === 'FAILED') {
-                res.status(500).json({ error: transJson.failureReason});
+            if ('' === results) {
+                // Valid ID, but results are not ready yet.
+                res.status(202).end();
             } else {
-                forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, req, res);
+                // GLTF data is ready.
+                const transResp = await fetch(`${onshapeApiUrl}/translations/${req.params.tid}`, { headers: { 'Authorization': `Bearer ${req.user.accessToken}` } });
+                const transJson = await transResp.json();
+                if (transJson.requestState === 'FAILED') {
+                    res.status(500).json({ error: transJson.failureReason});
+                } else {
+                    forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, req, res);
+                }
+                const webhookID = results;
+                WebhookService.unregisterWebhook(webhookID, req.user.accessToken)
+                    .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
+                    .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
             }
-            const webhookID = results;
-            WebhookService.unregisterWebhook(webhookID, req.user.accessToken)
-                .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
-                .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
         }
     });
 });
