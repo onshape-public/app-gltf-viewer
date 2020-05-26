@@ -78,6 +78,11 @@ apiRouter.get('/gltf', async (req, res) => {
         if (!resp.data.hasOwnProperty('id')) {
             console.error('[DEBUG] resp.data has no property "id"');
         }
+        for (const p of resp.data) {
+            if (resp.data.hasOwnProperty(p)) {
+                console.log(`[DEBUG] ${p} : ${resp.data[p]}`);
+            }
+        }
         redisClient.set(resp.data.id, 'in-progress', (err, data) => {
             if (err) console.error('[DEBUG] error:', err);
             else console.log('[DEBUG] data:', data);
