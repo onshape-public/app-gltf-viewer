@@ -78,7 +78,7 @@ apiRouter.get('/gltf', async (req, res) => {
         if (!resp.data.hasOwnProperty('id')) {
             console.error('[DEBUG] resp.data has no property "id"');
         }
-        for (const p of resp.data) {
+        for (const p in resp.data) {
             if (resp.data.hasOwnProperty(p)) {
                 console.log(`[DEBUG] ${p} : ${resp.data[p]}`);
             }
