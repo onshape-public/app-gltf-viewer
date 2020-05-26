@@ -53,6 +53,7 @@ app.use('/oauthSignin', (req, res) => {
         workId: req.query.workspaceId,
         elId: req.query.elementId
     };
+    console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
     redisClient.set(req.sessionID, JSON.stringify(state));
     return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
 }, (req, res) => { /* unused */ });
@@ -71,6 +72,7 @@ app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/
             });
             const sessioninfoRespJson = await sessioninfoResp.json();
             state.userID = sessioninfoRespJson.id;
+            console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
             redisClient.set(req.sessionID, JSON.stringify(state));
             res.redirect(`/?documentId=${state.docId}&workspaceId=${state.workId}&elementId=${state.elId}`);
         } else {
