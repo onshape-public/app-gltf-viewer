@@ -75,6 +75,9 @@ apiRouter.get('/gltf', async (req, res) => {
         // Store the tid in Redis so we know that it's being processed; empty string means 'recorded, but no result yet'.
         console.log('[DEBUG] resp.data:', resp.data);
         console.log('[DEBUG] resp.data["id"]:', resp.data["id"]);
+        if (!resp.data.hasOwnProperty('id')) {
+            console.error('[DEBUG] resp.data has no property "id"');
+        }
         redisClient.set(resp.data.id, 'in-progress', (err, data) => {
             if (err) console.error('[DEBUG] error:', err);
             else console.log('[DEBUG] data:', data);
