@@ -78,7 +78,6 @@ apiRouter.get('/gltf', async (req, res) => {
         }
         res.status(200).contentType(resp.contentType).send(resp.data);
     } catch (err) {
-        console.log(`[DEBUG] GET /gltf: error: ${err}`);
         res.status(500).json({ error: err });
     }
 });
