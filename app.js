@@ -48,11 +48,11 @@ passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
 app.use('/oauthSignin', (req, res) => {
-    console.log(`[DEBUG] req.query = ${JSON.stringify(req.query)}`);
     const state = {
         docId: req.query.documentId,
         workId: req.query.workspaceId,
-        elId: req.query.elementId
+        elId: req.query.elementId,
+        userID: req.query.userId
     };
     console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
     redisClient.set(req.sessionID, JSON.stringify(state));
@@ -60,26 +60,15 @@ app.use('/oauthSignin', (req, res) => {
 }, (req, res) => { /* unused */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
-    console.log(`[DEBUG] req.query = ${JSON.stringify(req.query)}`);
     redisClient.get(req.sessionID, async (err, results) => {
         if (err) {
             res.status(500).json({ error: err });
         } else if (results != null) {
             const state = JSON.parse(results);
-            const sessioninfoResp = await fetch(`${onshapeApiUrl}/users/sessioninfo`, {
-                headers: {
-                    'Authorization': `Bearer ${req.user.accessToken}`,
-                    'Accept': 'application/vnd.onshape.v1+json'
-                }
-            });
-            const sessioninfoRespJson = await sessioninfoResp.json();
-            state.userID = sessioninfoRespJson.id;
-            console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
-            redisClient.set(req.sessionID, JSON.stringify(state));
             res.redirect(`/?documentId=${state.docId}&workspaceId=${state.workId}&elementId=${state.elId}`);
         } else {
-            console.error(`No session found for session ID ${req.sessionID}`);
-            res.status(500).json({ error: 'No session found.' });
+            console.error(`No session data found for session ID ${req.sessionID}`);
+            res.status(500).json({ error: 'No data session found.' });
         }
     });
 });
