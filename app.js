@@ -56,9 +56,8 @@ app.use('/oauthSignin', (req, res) => {
     };
     console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
     redisClient.set(req.sessionID, JSON.stringify(state));
-    //return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
-},  passport.authenticate('onshape', { state: uuid.v4(state) }),
-    (req, res) => res.status(200).end());
+    return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
+}, (req, res) => res.status(200).end());
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
     redisClient.get(req.sessionID, async (err, results) => {
