@@ -14,7 +14,7 @@ module.exports = {
      * 
      * @returns {Promise<string,string>} Resolves with the webhook ID, or rejects with error message.
      */
-    registerWebhook: (sessionID, userAccessToken, documentId) => {
+    registerWebhook: (sessionID, userAccessToken, userID, documentId) => {
         return new Promise((resolve, reject) => {
             redisClient.get(sessionID, async (err, data) => {
                 if (err) {
@@ -33,7 +33,7 @@ module.exports = {
                             },
                             body: JSON.stringify({
                                 events: [ 'onshape.model.translation.complete' ],
-                                filter: `{$UserId} = '${jsonData.userID}' && {$DocumentId} = '${documentId}'`,
+                                filter: `{$UserId} = '${userID}' && {$DocumentId} = '${documentId}'`,
                                 options: { collapseEvents: false },
                                 url: `${process.env.WEBHOOK_CALLBACK_ROOT_URL}/api/event`
                             })

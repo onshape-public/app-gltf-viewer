@@ -52,12 +52,12 @@ app.use('/oauthSignin', (req, res, next) => {
         userID: req.query.userId
     };
     req.session.state = state;
-    redisClient.set(req.sessionID, JSON.stringify(state));
+    //redisClient.set(req.sessionID, JSON.stringify(state));
     return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
 }, (req, res) => { /* redirected to Onshape for authentication */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
-    console.log('req.session.state', req.session.state);
+    /*console.log('req.session.state', req.session.state);
     redisClient.get(req.sessionID, async (err, results) => {
         if (err) {
             res.status(500).json({ error: err });
@@ -68,7 +68,8 @@ app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/
             console.error(`No data found for session ID ${req.sessionID}`);
             res.status(500).json({ error: 'No session data found.' });
         }
-    });
+    });*/
+    res.redirect(`/?documentId=${req.session.state.docId}&workspaceId=${req.session.state.workId}&elementId=${req.session.state.elId}`);
 });
 
 app.get('/grantDenied', (req, res) => {
