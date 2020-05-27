@@ -56,7 +56,8 @@ app.use('/oauthSignin', (req, res) => {
     return;
     //return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
 }, //(req, res) => { /* redirected to Onshape for authentication */ });
-    passport.authenticate('onshape'));
+    passport.authenticate('onshape'),
+    (req, res) => { /* redirected to Onshape for authentication */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
     redisClient.get(req.sessionID, async (err, results) => {
