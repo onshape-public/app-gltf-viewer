@@ -48,8 +48,7 @@ app.use('/oauthSignin', (req, res, next) => {
     const state = {
         docId: req.query.documentId,
         workId: req.query.workspaceId,
-        elId: req.query.elementId,
-        userID: req.query.userId
+        elId: req.query.elementId
     };
     req.session.state = state;
     return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);

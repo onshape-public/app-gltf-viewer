@@ -58,7 +58,7 @@ apiRouter.get('/gltf', async (req, res) => {
         gltfElemId = req.query.gltfElementId,
         partId = req.query.partId;
     
-    WebhookService.registerWebhook(req.sessionID, req.user.accessToken, req.session.state.userID, did)
+    WebhookService.registerWebhook(req.sessionID, req.user.accessToken, req.session.passport.user.id, did)
         .catch((err) => console.error(`Failed to register webhook: ${err}`));
     
     const translationParams = {
