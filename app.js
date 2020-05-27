@@ -53,6 +53,7 @@ app.use('/oauthSignin', (req, res) => {
     };
     console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
     redisClient.set(req.sessionID, JSON.stringify(state));
+    return;
     //return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
 }, //(req, res) => { /* redirected to Onshape for authentication */ });
     passport.authenticate('onshape'));
