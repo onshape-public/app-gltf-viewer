@@ -58,7 +58,7 @@ app.use('/oauthSignin', (req, res, next) => {
 }, (req, res) => { /* redirected to Onshape for authentication */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
-    console.log(`req.session.state = ${req.session.state}`);
+    console.log('req.session.state', req.session.state);
     redisClient.get(req.sessionID, async (err, results) => {
         if (err) {
             res.status(500).json({ error: err });
