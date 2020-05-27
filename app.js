@@ -51,16 +51,14 @@ app.use('/oauthSignin', (req, res, next) => {
         elId: req.query.elementId,
         userID: req.query.userId
     };
-    //console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
-    console.log(`[DEBUG] redisClient.set(state${passport.session()}, ${JSON.stringify(state)})`)
-    //redisClient.set(req.sessionID, JSON.stringify(state));
-    redisClient.set(`state${passport.session()}`, JSON.stringify(state));
+    console.log(`[DEBUG] req.sessionID=${req.sessionID}; req.session.id=${req.session.id}`);
+    console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
+    redisClient.set(req.sessionID, JSON.stringify(state));
     return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
 }, (req, res) => { /* redirected to Onshape for authentication */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
-    //redisClient.get(req.sessionID, async (err, results) => {
-    redisClient.get(`state${passport.session()}`, async (err, results) => {
+    redisClient.get(req.sessionID, async (err, results) => {
         if (err) {
             res.status(500).json({ error: err });
         } else if (results != null) {
