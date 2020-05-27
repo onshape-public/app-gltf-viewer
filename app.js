@@ -51,13 +51,12 @@ app.use('/oauthSignin', (req, res, next) => {
         elId: req.query.elementId,
         userID: req.query.userId
     };
-    console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
-    redisClient.set(req.sessionID, JSON.stringify(state));
-    next();
-    //return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
-}, //(req, res) => { /* redirected to Onshape for authentication */ });
-    passport.authenticate('onshape'),
-    (req, res) => { /* redirected to Onshape for authentication */ });
+    //console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
+    console.log(`[DEBUG] redisClient.set(state${passport.session()}, ${JSON.stringify(state)})`)
+    //redisClient.set(req.sessionID, JSON.stringify(state));
+    redisClient.set(`state${passport.session()}`, JSON.stringify(state));
+    return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
+}, (req, res) => { /* redirected to Onshape for authentication */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
     redisClient.get(req.sessionID, async (err, results) => {
