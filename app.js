@@ -9,10 +9,7 @@ const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const OnshapeStrategy = require('passport-onshape');
 
-const fetch = require('node-fetch');
-
 const redisClient = require('./redis-client');
-const { onshapeApiUrl } = require('./utils');
 
 const app = express();
 
@@ -26,7 +23,11 @@ app.use(session({
     }),
     secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
-    resave: false
+    resave: false,
+    cookie: {
+        sameSite: 'none',
+        secure: true
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -57,7 +58,7 @@ app.use('/oauthSignin', (req, res) => {
     console.log(`[DEBUG] redisClient.set(${req.sessionID}, ${JSON.stringify(state)})`);
     redisClient.set(req.sessionID, JSON.stringify(state));
     return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
-}, (req, res) => res.status(200).end());
+}, (req, res) => { /* redirected to Onshape for authentication */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
     redisClient.get(req.sessionID, async (err, results) => {
