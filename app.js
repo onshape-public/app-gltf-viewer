@@ -44,7 +44,7 @@ passport.use(new OnshapeStrategy({
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
-app.use('/oauthSignin', (req, res) => {
+app.use('/oauthSignin', (req, res, next) => {
     const state = {
         docId: req.query.documentId,
         workId: req.query.workspaceId,
