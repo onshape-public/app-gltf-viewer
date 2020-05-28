@@ -15,7 +15,7 @@ module.exports = {
      * @returns {Promise<string,string>} Resolves with the webhook ID, or rejects with error message.
      */
     registerWebhook: (userAccessToken, userID, documentId) => {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
                 const resp = await fetch(`${onshapeApiUrl}/webhooks`, {
                     method: 'POST',
