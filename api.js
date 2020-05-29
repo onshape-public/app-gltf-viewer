@@ -117,6 +117,10 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
                     .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
                     .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
             }
+            const webhookID = results;
+            WebhookService.unregisterWebhook(webhookID, req.user.accessToken)
+                .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
+                .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
         }
     });
 });
