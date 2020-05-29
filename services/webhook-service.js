@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 
 const { onshapeApiUrl } = require('../utils');
-const redisClient = require('../redis-client');
 
 module.exports = {
     
@@ -14,41 +13,32 @@ module.exports = {
      * 
      * @returns {Promise<string,string>} Resolves with the webhook ID, or rejects with error message.
      */
-    registerWebhook: (sessionID, userAccessToken, documentId) => {
-        return new Promise((resolve, reject) => {
-            redisClient.get(sessionID, async (err, data) => {
-                if (err) {
-                    reject('Failed to read data from Redis ' + err);
-                } else if (!data) {
-                    reject('No session data found');
+    registerWebhook: (userAccessToken, userID, documentId) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const resp = await fetch(`${onshapeApiUrl}/webhooks`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${userAccessToken}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.onshape.v1+json'
+                    },
+                    body: JSON.stringify({
+                        events: [ 'onshape.model.translation.complete' ],
+                        filter: `{$UserId} = '${userID}' && {$DocumentId} = '${documentId}'`,
+                        options: { collapseEvents: false },
+                        url: `${process.env.WEBHOOK_CALLBACK_ROOT_URL}/api/event`
+                    })
+                });
+                const respJson = await resp.json();
+                if (resp.ok) {
+                    resolve(respJson.id);
                 } else {
-                    try {
-                        const jsonData =  JSON.parse(data);
-                        const resp = await fetch(`${onshapeApiUrl}/webhooks`, {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${userAccessToken}`,
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/vnd.onshape.v1+json'
-                            },
-                            body: JSON.stringify({
-                                events: [ 'onshape.model.translation.complete' ],
-                                filter: `{$UserId} = '${jsonData.userID}' && {$DocumentId} = '${documentId}'`,
-                                options: { collapseEvents: false },
-                                url: `${process.env.WEBHOOK_CALLBACK_ROOT_URL}/api/event`
-                            })
-                        });
-                        const respJson = await resp.json();
-                        if (resp.ok) {
-                            resolve(respJson.id);
-                        } else {
-                            reject('Failed to create webhook ' + JSON.stringify(respJson));
-                        }
-                    } catch (err) {
-                        reject(err);
-                    }
+                    reject('Failed to create webhook ' + JSON.stringify(respJson));
                 }
-            });
+            } catch (err) {
+                reject(err);
+            }
         });
     },
     

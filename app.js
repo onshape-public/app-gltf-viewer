@@ -9,10 +9,7 @@ const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const OnshapeStrategy = require('passport-onshape');
 
-const fetch = require('node-fetch');
-
 const redisClient = require('./redis-client');
-const { onshapeApiUrl } = require('./utils');
 
 const app = express();
 
@@ -53,30 +50,12 @@ app.use('/oauthSignin', (req, res) => {
         workId: req.query.workspaceId,
         elId: req.query.elementId
     };
-    redisClient.set(req.sessionID, JSON.stringify(state));
+    req.session.state = state;
     return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
-}, (req, res) => { /* unused */ });
+}, (req, res) => { /* redirected to Onshape for authentication */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
-    redisClient.get(req.sessionID, async (err, results) => {
-        if (err) {
-            res.status(500).json({ error: err });
-        } else if (results != null) {
-            const state = JSON.parse(results);
-            const sessioninfoResp = await fetch(`${onshapeApiUrl}/users/sessioninfo`, {
-                headers: {
-                    'Authorization': `Bearer ${req.user.accessToken}`,
-                    'Accept': 'application/vnd.onshape.v1+json'
-                }
-            });
-            const sessioninfoRespJson = await sessioninfoResp.json();
-            state.userID = sessioninfoRespJson.id;
-            redisClient.set(req.sessionID, JSON.stringify(state));
-            res.redirect(`/?documentId=${state.docId}&workspaceId=${state.workId}&elementId=${state.elId}`);
-        } else {
-            res.status(500).json({ error: 'No session found.' });
-        }
-    });
+    res.redirect(`/?documentId=${req.session.state.docId}&workspaceId=${req.session.state.workId}&elementId=${req.session.state.elId}`);
 });
 
 app.get('/grantDenied', (req, res) => {
