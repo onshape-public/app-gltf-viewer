@@ -43,7 +43,7 @@ heroku config:set SESSION_SECRET=a-cryptographically-secure-string
 ```
 10. You can confirm your configuration settings by running `heroku config`. You should see all of the above, plus a `REDISTOGO_URL` variable created by the add-on.
 1. Commit your (local) configuration changes, and push to Heroku. This will start a build process, after which your application will be up and running.
-`git commit -am "Updated configuration." && git push master heroku`. If you would like to watch the log as the build is running you can run `heroku logs --tail`.
+`git commit -am "Updated configuration." && git push heroku master`. If you would like to watch the log as the build is running you can run `heroku logs --tail`.
 
 ## Usage
 Once your application is deployed and configured, you can subscribe to it through the [Onshape App Store](https://appstore.onshape.com), and add it to your document. You can then use the dropdown menu at the top to select the element to translate and render, and it will be shown in the page.
