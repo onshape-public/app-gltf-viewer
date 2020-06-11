@@ -10,7 +10,7 @@ const redisPort = process.env.REDIS_PORT;
 const sessionSecret = process.env.SESSION_SECRET;
 const webhookCallbackRootUrl = process.env.WEBHOOK_CALLBACK_ROOT_URL;
 
-console.log(`port=${port}\nonshapeApiUrl=${nonshapeApiUrl}\noauthCallbackUrl=${oauthCallbackUrl}\noauthClientId=${oauthClientId}`
+console.log(`port=${port}\nonshapeApiUrl=${onshapeApiUrl}\noauthCallbackUrl=${oauthCallbackUrl}\noauthClientId=${oauthClientId}`
     +`\noauthClientSecret=${oauthClientSecret}\noauthUrl=${oauthUrl}\nredisToGoUrl=${redisToGoUrl}\nredisHost=${redisHost}`
     +`\nredisPort=${redisPort}\nsessionSecret=${sessionSecret}\nwebhookCallbackRootUrl=${webhookCallbackRootUrl}`)
 
