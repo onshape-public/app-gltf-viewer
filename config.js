@@ -1,3 +1,6 @@
+
+console.log('[DEBUG] process.env', process.env);
+
 const port = process.env.PORT;
 const onshapeApiUrl = process.env.API_URL;
 const oauthCallbackUrl = process.env.OAUTH_CALLBACK_URL;
