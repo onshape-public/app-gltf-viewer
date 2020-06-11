@@ -10,10 +10,6 @@ const redisPort = process.env.REDIS_PORT;
 const sessionSecret = process.env.SESSION_SECRET;
 const webhookCallbackRootUrl = process.env.WEBHOOK_CALLBACK_ROOT_URL;
 
-console.log(`port=${port}\nonshapeApiUrl=${onshapeApiUrl}\noauthCallbackUrl=${oauthCallbackUrl}\noauthClientId=${oauthClientId}`
-    +`\noauthClientSecret=${oauthClientSecret}\noauthUrl=${oauthUrl}\nredisToGoUrl=${redisToGoUrl}\nredisHost=${redisHost}`
-    +`\nredisPort=${redisPort}\nsessionSecret=${sessionSecret}\nwebhookCallbackRootUrl=${webhookCallbackRootUrl}`)
-
 /**
  * Checks if the given string is a URL. A string considered a URL if it can be parsed
  * as a URL (based on the WHATWG definition).
@@ -40,10 +36,10 @@ const isValidUrl = function(stringToTest, protocols) {
         if (!protocols) {
             return true;
         }
-        if (typeof stringToTest === 'string' || stringToTest instanceof String) {
+        if (typeof protocols === 'string' || protocols instanceof String) {
             protocols = [ protocols ];
         }
-        return !protocol || protocols.includes(url.protocol);
+        return !protocols || protocols.includes(url.protocol);
     } catch {
         return false;
     }
@@ -77,6 +73,7 @@ const isValidHttpUrl = function(stringToTest) {
 const isValidString = function(stringToTest) {
     if (!stringToTest) return false;
     if (!(stringToTest.trim())) return false;
+    return true;
 }
 
 // We will check the entire configuration and only throw one error (if invalid).
