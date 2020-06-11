@@ -1,6 +1,3 @@
-
-console.log('[DEBUG] process.env', process.env);
-
 const port = process.env.PORT;
 const onshapeApiUrl = process.env.API_URL;
 const oauthCallbackUrl = process.env.OAUTH_CALLBACK_URL;
@@ -12,6 +9,10 @@ const redisHost = process.env.REDIS_HOST;
 const redisPort = process.env.REDIS_PORT;
 const sessionSecret = process.env.SESSION_SECRET;
 const webhookCallbackRootUrl = process.env.WEBHOOK_CALLBACK_ROOT_URL;
+
+console.log(`port=${port}\nonshapeApiUrl=${nonshapeApiUrl}\noauthCallbackUrl=${oauthCallbackUrl}\noauthClientId=${oauthClientId}`
+    +`\noauthClientSecret=${oauthClientSecret}\noauthUrl=${oauthUrl}\nredisToGoUrl=${redisToGoUrl}\nredisHost=${redisHost}`
+    +`\nredisPort=${redisPort}\nsessionSecret=${sessionSecret}\nwebhookCallbackRootUrl=${webhookCallbackRootUrl}`)
 
 /**
  * Checks if the given string is a URL. A string considered a URL if it can be parsed
