@@ -72,7 +72,8 @@ apiRouter.get('/gltf', async (req, res) => {
     try {
         const resp = await (partId ? TranslationService.translatePart(req.user.accessToken, gltfElemId, partId, translationParams)
             : TranslationService.translateElement(req.user.accessToken, gltfElemId, translationParams));
-        // Store the tid in Redis so we know that it's being processed; empty string means 'recorded, but no result yet'.
+        // Store the tid in Redis so we know that it's being processed; it will remain 'in-progress' until we
+        // are notified that it is complete, at which point it will be the translation ID.
         if (resp.contentType.indexOf('json') >= 0) {
             redisClient.set(JSON.parse(resp.data).id, 'in-progress');
         }
