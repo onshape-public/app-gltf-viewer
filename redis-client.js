@@ -1,13 +1,15 @@
 const redis = require('redis');
 
+const { redisToGoUrl, redisHost, redisPort } = require('./config');
+
 // The Redis client to be used throughout the app.
 let redisClient;
-if (process.env.REDISTOGO_URL) {
-    const url = require('url').parse(process.env.REDISTOGO_URL);
+if (redisToGoUrl) {
+    const url = require('url').parse(redisToGoUrl);
     redisClient = redis.createClient(url.port, url.hostname);
     redisClient.auth(url.auth.split(':')[1]);
-} else if (process.env.REDIS_HOST && process.env.REDIS_PORT) {
-    redisClient = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
+} else if (redisHost && redisPort) {
+    redisClient = redis.createClient(redisPort, redisHost);
 } else {
     redisClient = redis.createClient();
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
+const port = require('../config').port || 3000;
 const app = require('../app');
-
-const server = app.listen(process.env.PORT || 3000, () => {});
+const server = app.listen(port, () => {});
