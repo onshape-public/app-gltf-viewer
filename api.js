@@ -108,7 +108,7 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
                 const transResp = await fetch(`${onshapeApiUrl}/translations/${req.params.tid}`, { headers: { 'Authorization': `Bearer ${req.user.accessToken}` } });
                 const transJson = await transResp.json();
                 if (transJson.requestState === 'FAILED') {
-                    res.status(500).json({ error: transJson.failureReason});
+                    res.status(500).json({ error: transJson.failureReason });
                 } else {
                     forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, req, res);
                 }

@@ -6,7 +6,7 @@ This example could also be re-worked to make it a fully separate application, wh
 ## Installation
 This section outlines how to deploy and configure the application on Heroku. If you are using another service, some of these steps will not apply to you, and the equivalent steps for the other service should be taken instead.
 
-These instructions assume that the following utilities are installed: git, npm, and [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) (e.g. `brew tap heroku/brew && brew install heroku` on macOS or `sudo snap install --classic heroku` on Linux distributes that support Snap applications).
+These instructions assume that the following utilities are installed: git, npm, and [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) (e.g. `brew tap heroku/brew && brew install heroku` on macOS or `sudo snap install --classic heroku` on Linux distributions that support Snap applications).
 
 1. Make a bare clone of the repository: `git clone --bare https://github.com/onshape-public/app-gltf-viewer.git`.
 1. Push to a new mirror repository: `cd gltf-viewer.git && git push --mirror https://github.com/youruser/my-gltf-viewer.git`.
@@ -48,7 +48,7 @@ heroku config:set SESSION_SECRET=a-cryptographically-secure-string
 ## Usage
 Once your application is deployed and configured, you can subscribe to it through the [Onshape App Store](https://appstore.onshape.com), and add it to your document. You can then use the dropdown menu at the top to select the element to translate and render, and it will be shown in the page.
 
-Note that if you have a complex model with a lot of parts there are two implications: the dropdown list can be quite long; and translating the model to GLTF can be time consuming. If you think there is an issue loading or rendering your model, you can open the Javascript console of your browser to check for any errors. You may see a series of "404" messages - this is normal while the browser polls the application for the translated GLTF data.
+Note that if you have a complex model with a lot of parts there are two implications: the dropdown list can be quite long; and translating the model to GLTF can be time consuming. If you think there is an issue loading or rendering your model, you can open the Javascript console of your browser to check for any errors.
 
 Once the model is rendered, the following controls are available to you:
 Control | How to Use
