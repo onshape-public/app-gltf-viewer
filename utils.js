@@ -1,13 +1,7 @@
 const fetch = require('node-fetch');
-
-const onshapeApiUrl = process.env.API_URL;
+const { onshapeApiUrl } = require('./config');
 
 module.exports = {
-    
-    /**
-     * The URL of the Onshape API. This must be set as an environment variable.
-     */
-    onshapeApiUrl,
     
     /**
      * Send a request to the Onshape API, and proxy the response back to the caller.

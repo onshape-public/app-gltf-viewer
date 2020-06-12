@@ -2,7 +2,8 @@ const fetch = require('node-fetch');
 
 const WebhookService = require('./services/webhook-service');
 const TranslationService = require('./services/translation-service');
-const { onshapeApiUrl, forwardRequestToOnshape } = require('./utils');
+const { onshapeApiUrl } = require('./config');
+const { forwardRequestToOnshape } = require('./utils');
 const redisClient = require('./redis-client');
     
 const apiRouter = require('express').Router();
@@ -72,7 +73,8 @@ apiRouter.get('/gltf', async (req, res) => {
     try {
         const resp = await (partId ? TranslationService.translatePart(req.user.accessToken, gltfElemId, partId, translationParams)
             : TranslationService.translateElement(req.user.accessToken, gltfElemId, translationParams));
-        // Store the tid in Redis so we know that it's being processed; empty string means 'recorded, but no result yet'.
+        // Store the tid in Redis so we know that it's being processed; it will remain 'in-progress' until we
+        // are notified that it is complete, at which point it will be the translation ID.
         if (resp.contentType.indexOf('json') >= 0) {
             redisClient.set(JSON.parse(resp.data).id, 'in-progress');
         }
@@ -108,7 +110,7 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
                 const transResp = await fetch(`${onshapeApiUrl}/translations/${req.params.tid}`, { headers: { 'Authorization': `Bearer ${req.user.accessToken}` } });
                 const transJson = await transResp.json();
                 if (transJson.requestState === 'FAILED') {
-                    res.status(500).json({ error: transJson.failureReason});
+                    res.status(500).json({ error: transJson.failureReason });
                 } else {
                     forwardRequestToOnshape(`${onshapeApiUrl}/documents/d/${transJson.documentId}/externaldata/${transJson.resultExternalDataIds[0]}`, req, res);
                 }
@@ -117,10 +119,6 @@ apiRouter.get('/gltf/:tid', async (req, res) => {
                     .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
                     .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
             }
-            const webhookID = results;
-            WebhookService.unregisterWebhook(webhookID, req.user.accessToken)
-                .then(() => console.log(`Webhook ${webhookID} unregistered successfully`))
-                .catch((err) => console.error(`Failed to unregister webhook ${webhookID}: ${JSON.stringify(err)}`));
         }
     });
 });

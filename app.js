@@ -9,6 +9,8 @@ const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const OnshapeStrategy = require('passport-onshape');
 
+const config = require('./config');
+
 const redisClient = require('./redis-client');
 
 const app = express();
@@ -21,19 +23,19 @@ app.use(session({
     store: new RedisStore({
         client: redisClient
     }),
-    secret: process.env.SESSION_SECRET,
+    secret: config.sessionSecret,
     saveUninitialized: false,
     resave: false
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new OnshapeStrategy({
-        clientID: process.env.OAUTH_CLIENT_ID,
-        clientSecret: process.env.OAUTH_CLIENT_SECRET,
-        callbackURL: process.env.OAUTH_CALLBACK_URL,
-        authorizationURL: `${process.env.OAUTH_URL}/oauth/authorize`,
-        tokenURL: `${process.env.OAUTH_URL}/oauth/token`,
-        userProfileURL: `${process.env.OAUTH_URL}/api/users/sessioninfo`
+        clientID: config.oauthClientId,
+        clientSecret: config.oauthClientSecret,
+        callbackURL: config.oauthCallbackUrl,
+        authorizationURL: `${config.oauthUrl}/oauth/authorize`,
+        tokenURL: `${config.oauthUrl}/oauth/token`,
+        userProfileURL: `${config.oauthUrl}/api/users/sessioninfo`
     },
     (accessToken, refreshToken, profile, done) => {
         profile.accessToken = accessToken;

@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-const { onshapeApiUrl } = require('../utils');
+const { onshapeApiUrl } = require('../config');
 
 /**
  * The default body contents for translation requests. Request-specific

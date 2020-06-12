@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-const { onshapeApiUrl } = require('../utils');
+const { onshapeApiUrl, webhookCallbackRootUrl } = require('../config');
 
 module.exports = {
     
@@ -27,7 +27,7 @@ module.exports = {
                         events: [ 'onshape.model.translation.complete' ],
                         filter: `{$UserId} = '${userID}' && {$DocumentId} = '${documentId}'`,
                         options: { collapseEvents: false },
-                        url: `${process.env.WEBHOOK_CALLBACK_ROOT_URL}/api/event`
+                        url: `${webhookCallbackRootUrl}/api/event`
                     })
                 });
                 const respJson = await resp.json();
