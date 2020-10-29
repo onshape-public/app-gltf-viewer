@@ -1,5 +1,5 @@
 # **app-gltf-viewer**
-The GLTF Viewer is a sample application allowing for visualizing GLTF data translated from an Onshape model. It is a Node.JS application that runs as a tab inside an Onshape document. Onshape passes the document context to the viewer, which is used to help generate the GLTF visualization.
+The GLTF Viewer is a sample application allowing for visualizing GLTF data translated from an Onshape model. It is a Node.JS application that runs as an tab inside an Onshape document. Onshape passes the document context to the viewer, which is used to help generate the GLTF visualization.
 
 This example could also be re-worked to make it a fully separate application, which would communicate with the Onshape API to obtain the document information (as opposed to Onshape providing that context for the application).
 
@@ -11,42 +11,35 @@ These instructions assume that the following utilities are installed: git, npm, 
 1. Make a bare clone of the repository: `git clone --bare https://github.com/onshape-public/app-gltf-viewer.git`.
 1. Push to a new mirror repository: `cd gltf-viewer.git && git push --mirror https://github.com/<youruser>/my-gltf-viewer.git`.
 1. Clean up the temporary repository: `cd .. && rm -rf app-gltf-viewer.git`.
-1. Clone your newly mirrored repository: `git clone https://github.com/<youruser>/my-gltf-viewer.git`.
+1. Clone your newly mirrored repository: `https://github.com/<youruser>/my-gltf-viewer.git`.
 1. Create a heroku app for your project: `cd my-gltf-viewer && heroku create`. Note the URL provided in the output of this command.
 1. Go to the [Onshape Developer Portal](https://dev-portal.onshape.com/), create a new OAuth Application and Store entry with the following settings. Make sure that you copy the Client ID and Client Secret, as these will be needed later, and cannot be shown again.
 
 OAuth Application Setting | Value
 ------------------------- | -----
-Redirect URL | https://<url-from-heroku-create.herokuapp.com>/oauthRedirect
-OAuth URL | https://<url-from-heroku-create.herokuapp.com>/oauthSignin
+Redirect URL | https://url-from-heroku-create.herokuapp.com/oauthRedirect
+OAuth URL | https://url-from-heroku-create.herokuapp.com/oauthSignin
 7. Update the `package.json` file with your new Heroku application URL:
 ```json
 {
   ...
   "repository": {
     "type": "git",
-    "url": “https://<url-from-heroku-create.herokuapp.com>”
+    "url": "https://url-from-heroku-create.herokuapp.com"
   },
   ...
 }
 ```
-8. Click on the “Extensions” tab and “Add extension” to specify a tab-based extension.
-	- Name: `<Enter extension name>`
-	- Description(Optional): `<Enter extension description>`
-	- Location: `Element Tab`
-	- Action URL: `https://<url-from-heroku-create.herokuapp.com>
-	- Icon(Optional): `<Drop an image to upload>`
-
-8. Create a RedisTOGO add-on for you Heroku application: `heroku addons:create redistogo`
+8. Create a RedisTOGO add-on for you Heroku application: `heroku addons:create redistogo`.
 1. Configure the necessary environment variables:
 ```Shell
 heroku config:set API_URL=https://cad.onshape.com/api
-heroku config:set OAUTH_CALLBACK_URL=https://<url-from-heroku-create.herokuapp.com>/oauthRedirect
-heroku config:set OAUTH_CLIENT_ID= <client-id-from-created-app-in-dev-portal>
-heroku config:set OAUTH_CLIENT_SECRET=<client-secret-from-created-app-in-dev-portal>
+heroku config:set OAUTH_CALLBACK_URL=https://url-from-heroku-create.herokuapp.com/oauthRedirect
+heroku config:set OAUTH_CLIENT_ID=client-id-from-created-app-in-dev-portal
+heroku config:set OAUTH_CLIENT_SECRET=client-secret-from-created-app-in-dev-portal
 heroku config:set OAUTH_URL=https://oauth.onshape.com
-heroku config:set WEBHOOK_CALLBACK_ROOT_URL=https://<url-from-heroku-create.herokuapp.com>
-heroku config:set SESSION_SECRET=<a-cryptographically-secure-string>
+heroku config:set WEBHOOK_CALLBACK_ROOT_URL=https://url-from-heroku-create.herokuapp.com
+heroku config:set SESSION_SECRET=a-cryptographically-secure-string
 ```
 10. You can confirm your configuration settings by running `heroku config`. You should see all of the above, plus a `REDISTOGO_URL` variable created by the add-on.
 1. Commit your (local) configuration changes, and push to Heroku. This will start a build process, after which your application will be up and running.
@@ -71,4 +64,3 @@ Pan | Right-click and move mouse
     * [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 * [GLTF information](https://www.khronos.org/gltf/) from Khronos Group
 * [three.js](https://threejs.org/) library to render GLTF
-                     
