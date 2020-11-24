@@ -9,7 +9,7 @@ This section outlines how to deploy and configure the application on Heroku. If 
 These instructions assume that the following utilities are installed: git, npm, and [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) (e.g. `brew tap heroku/brew && brew install heroku` on macOS or `sudo snap install --classic heroku` on Linux distributions that support Snap applications).
 
 1. Make a bare clone of the repository: `git clone --bare https://github.com/onshape-public/app-gltf-viewer.git`.
-1. Push to a new mirror repository: `cd gltf-viewer.git && git push --mirror https://github.com/<youruser>/my-gltf-viewer.git`.
+1. Push to a new mirror repository: `cd app-gltf-viewer.git && git push --mirror https://github.com/<youruser>/my-gltf-viewer.git`.
 1. Clean up the temporary repository: `cd .. && rm -rf app-gltf-viewer.git`.
 1. Clone your newly mirrored repository: `git clone https://github.com/<youruser>/my-gltf-viewer.git`.
 1. Create a heroku app for your project: `cd my-gltf-viewer && heroku create`. Note the URL provided in the output of this command.
