@@ -29,11 +29,12 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     cookie: {
+        name: 'app-gltf-viewer',
         sameSite: 'none',
         secure: true,
         httpOnly: true,
         path: '/',
-        maxAge: 1000 * 60 * 60
+        maxAge: 1000 * 60 * 60 * 24 // 1 day
     }
 }));
 app.use(passport.initialize());
