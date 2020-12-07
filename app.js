@@ -25,7 +25,11 @@ app.use(session({
     }),
     secret: config.sessionSecret,
     saveUninitialized: false,
-    resave: false
+    resave: false,
+    cookie: {
+        sameSite: 'none',
+        secure: true
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
