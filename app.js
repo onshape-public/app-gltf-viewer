@@ -19,13 +19,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(bodyParser.json());
 
+app.set('trust proxy', 1); // To allow to run correctly behind Heroku
+
 app.use(session({
     store: new RedisStore({
         client: redisClient
     }),
     secret: config.sessionSecret,
     saveUninitialized: false,
-    resave: false
+    resave: false,
+    cookie: {
+        name: 'app-gltf-viewer',
+        sameSite: 'none',
+        secure: true,
+        httpOnly: true,
+        path: '/',
+        maxAge: 1000 * 60 * 60 * 24 // 1 day
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
