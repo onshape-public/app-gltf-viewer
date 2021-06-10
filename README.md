@@ -42,7 +42,7 @@ OAuth URL | https://<url-from-heroku-create.herokuapp.com>/oauthSignin
 ```Shell
 heroku config:set API_URL=https://cad.onshape.com/api
 heroku config:set OAUTH_CALLBACK_URL=https://<url-from-heroku-create.herokuapp.com>/oauthRedirect
-heroku config:set OAUTH_CLIENT_ID= <client-id-from-created-app-in-dev-portal>
+heroku config:set OAUTH_CLIENT_ID=<client-id-from-created-app-in-dev-portal>
 heroku config:set OAUTH_CLIENT_SECRET=<client-secret-from-created-app-in-dev-portal>
 heroku config:set OAUTH_URL=https://oauth.onshape.com
 heroku config:set WEBHOOK_CALLBACK_ROOT_URL=https://<url-from-heroku-create.herokuapp.com>
