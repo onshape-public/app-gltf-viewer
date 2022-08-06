@@ -118,7 +118,7 @@ const initThreeJsElements = function() {
             camera.far = size * 100;
             camera.updateProjectionMatrix();
             camera.position.copy(center);
-            const boxSize = box.getSize();
+            const boxSize = box.getSize(new Vector3());
             camera.position.x = boxSize.x * 2;
             camera.position.y = boxSize.y * 2;
             camera.position.z = boxSize.z * 2;
