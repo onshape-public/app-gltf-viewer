@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "connect-redis": "^5.0.0",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "express-session": "^1.17.1",
     "node-fetch": "^2.6.1",
     "passport": "^0.4.1",
