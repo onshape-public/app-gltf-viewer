@@ -4,9 +4,6 @@ const oauthCallbackUrl = process.env.OAUTH_CALLBACK_URL;
 const oauthClientId = process.env.OAUTH_CLIENT_ID;
 const oauthClientSecret = process.env.OAUTH_CLIENT_SECRET;
 const oauthUrl = process.env.OAUTH_URL;
-const redisToGoUrl = process.env.REDISTOGO_URL;
-const redisHost = process.env.REDIS_HOST;
-const redisPort = process.env.REDIS_PORT;
 const sessionSecret = process.env.SESSION_SECRET;
 const webhookCallbackRootUrl = process.env.WEBHOOK_CALLBACK_ROOT_URL;
 
@@ -85,9 +82,6 @@ if (!isValidHttpUrl(oauthCallbackUrl))                      errors.push('OAUTH_C
 if (!isValidString(oauthClientId))                          errors.push('OAUTH_CLIENT_ID must have content');
 if (!isValidString(oauthClientSecret))                      errors.push('OAUTH_CLIENT_SECRET must have content');
 if (!isValidHttpUrl(oauthUrl))                              errors.push('OAUTH_URL is not a valid HTTP(S) URL');
-if (redisToGoUrl && !isValidUrl(redisToGoUrl, 'redis:'))    errors.push('REDISTOGO_URL is not a valid Redis URL');
-if (redisHost && !isValidString(redisHost))                 errors.push('REDIS_HOST must have content');
-if (redisPort && !isValidString(redisPort))                 errors.push('REDIS_PORT must have content');
 if (!isValidString(sessionSecret))                          errors.push('SESSION_SECRET must have content');
 if (!isValidHttpUrl(webhookCallbackRootUrl))                errors.push('WEBHOOK_CALLBACK_ROOT_URL is not a valid HTTP(S) URL');
 
@@ -127,21 +121,6 @@ module.exports = {
      * The parent URL of the Onshape OAuth endpoints, e.g. `https://oauth.onshape.com`.
      */
     oauthUrl,
-    
-    /**
-     * The URL of the Redis To Go add-on (if deployed in Heroku). This may be `undefined`.
-     */
-    redisToGoUrl,
-    
-    /**
-     * The URL of the Redis host. This may be `undefined`.
-     */
-    redisHost,
-    
-    /**
-     * The port of the Redis host. This may be `undefined`.
-     */
-    redisPort,
     
     /**
      * The secret for handling session data.
