@@ -4,7 +4,7 @@
   "description": "A sample app to view glTF files exported from OnShape.",
   "main": "bin/www",
   "scripts": {
-    "start": "rollup -c && bin/www",
+    "start": "bin/www",
     "heroku-postbuild": "rollup -c"
   },
   "author": "Ron Gajdos <rgajdos@ptc.com>",
