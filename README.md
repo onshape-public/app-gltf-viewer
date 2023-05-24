@@ -37,8 +37,7 @@ OAuth URL | https://<url-from-heroku-create.herokuapp.com>/oauthSignin
 	- Action URL: `https://<url-from-heroku-create.herokuapp.com>
 	- Icon(Optional): `<Drop an image to upload>`
 
-9. Create a RedisTOGO add-on for you Heroku application: `heroku addons:create redistogo`
-10. Configure the necessary environment variables:
+9. Configure the necessary environment variables:
 ```Shell
 heroku config:set API_URL=https://cad.onshape.com/api
 heroku config:set OAUTH_CALLBACK_URL=https://<url-from-heroku-create.herokuapp.com>/oauthRedirect
@@ -48,8 +47,8 @@ heroku config:set OAUTH_URL=https://oauth.onshape.com
 heroku config:set WEBHOOK_CALLBACK_ROOT_URL=https://<url-from-heroku-create.herokuapp.com>
 heroku config:set SESSION_SECRET=<a-cryptographically-secure-string>
 ```
-11. You can confirm your configuration settings by running `heroku config`. You should see all of the above, plus a `REDISTOGO_URL` variable created by the add-on.
-12. Commit your (local) configuration changes, and push to Heroku. This will start a build process, after which your application will be up and running.
+10. You can confirm your configuration settings by running `heroku config`. You should see all of the above.
+11. Commit your (local) configuration changes, and push to Heroku. This will start a build process, after which your application will be up and running.
 `git commit -am "Updated configuration." && git push heroku master`. If you would like to watch the log as the build is running you can run `heroku logs --tail`.
 
 ## Usage

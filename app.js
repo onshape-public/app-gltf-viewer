@@ -5,13 +5,10 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 
-const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const OnshapeStrategy = require('passport-onshape');
 
 const config = require('./config');
-
-const redisClient = require('./redis-client');
 
 const app = express();
 
@@ -22,9 +19,6 @@ app.use(bodyParser.json());
 app.set('trust proxy', 1); // To allow to run correctly behind Heroku
 
 app.use(session({
-    store: new RedisStore({
-        client: redisClient
-    }),
     secret: config.sessionSecret,
     saveUninitialized: false,
     resave: false,
