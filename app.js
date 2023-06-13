@@ -69,7 +69,11 @@ app.get('/grantDenied', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
+    if (!req.user) {
+        return res.redirect(`/oauthSignin${req._parsedUrl.search}`);
+    } else {
+        return res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
+    }
 });
 
 app.use('/api', require('./api'));
