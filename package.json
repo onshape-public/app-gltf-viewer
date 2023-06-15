@@ -12,7 +12,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "passport": "^0.4.1",
     "passport-onshape": "^1.1.2",
     "three": "^0.125.0",
