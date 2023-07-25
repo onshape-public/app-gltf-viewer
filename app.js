@@ -70,10 +70,10 @@ app.get('/grantDenied', (req, res) => {
 
 /**
  * After landing on the home page, we check if a user had already signed in.
- * If no user has signed in, we redirect the request to the OAuth sign in page.
+ * If no user has signed in, we redirect the request to the OAuth sign-in page.
  * If a user had signed in previously, we will attempt to refresh the access token of the user.
  * After successfully refreshing the access token, we will simply take the user to the landing page of the app.
- * If the refresh token request fails, we will redirect the user to the OAuth sign in page again. 
+ * If the refresh token request fails, we will redirect the user to the OAuth sign-in page again. 
  */
 app.get('/', (req, res) => {
     if (!req.user) {
