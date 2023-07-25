@@ -68,14 +68,49 @@ app.get('/grantDenied', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'html', 'grantDenied.html'));
 })
 
+/**
+ * After landing on the home page, we check if a user had already signed in.
+ * If no user has signed in, we redirect the request to the OAuth sign in page.
+ * If a user had signed in previously, we will attempt to refresh the access token of ther user.
+ * After successfully refreshing the access token, we will simply take the user to the landing page of the app.
+ * If the refresh token request fails, we will redirect the user to the OAuth sign in page again. 
+ */
 app.get('/', (req, res) => {
     if (!req.user) {
-        return res.redirect(`/oauthSignin${req._parsedUrl.search}`);
+        return res.redirect(`/oauthSignin${req._parsedUrl.search ? req._parsedUrl.search : ""}`);
     } else {
-        return res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
+        refreshAccessToken(req.user).then((tokenJson) => {
+            // Dereference the user object and update the access token and refresh token in the in-memory object.
+            let usrObj = JSON.parse(JSON.stringify(req.user));
+            usrObj.accessToken = tokenJson.access_token;
+            usrObj.refreshToken = tokenJson.refresh_token;
+            // Update the user object in PassportJS. No redirections will happen here, this is a purely internal operation.
+            req.login(usrObj, () => {
+                return res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
+            });
+        }).catch(() => {
+            // Refresh token failed, take the user to OAuth sign in page.
+            return res.redirect(`/oauthSignin${req._parsedUrl.search ? req._parsedUrl.search : ""}`);
+        });
     }
 });
 
 app.use('/api', require('./api'));
+
+const refreshAccessToken = async (user) => {
+    const body = 'grant_type=refresh_token&refresh_token=' + user.refreshToken + '&client_id=' + config.oauthClientId + '&client_secret=' + config.oauthClientSecret;
+    let res = await fetch(config.oauthUrl + "/oauth/token", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body
+    });
+    if (res.ok) {
+        return await res.json();
+    } else {
+        throw new Error("Could not refresh access token, please sign in again.");
+    }
+}
 
 module.exports = app;
