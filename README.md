@@ -1,9 +1,12 @@
 ## **README**
-The GLTF Viewer is a sample application that demonstrates how to **deploy an Onshape application**. It enables visualization of GLTF data translated from an Onshape model. It is a Node.JS application that runs as a tab inside an Onshape document. Onshape passes the document context to the viewer, which is used to help generate the GLTF visualization. 
+The GLTF Viewer is a sample application that demonstrates:
+ * How to fetch a glTF representation of an Onshape model. 
+ * How to create an app that runs as a tab inside an Onshape document
+ * OAuth2 authentication
+ * Use of REST APIs
+ * Use of document context
 
-This application also demonstrates a **successful authentication process via OAuth2**.
-
-This application is **deployed using Heroku**. You must either have a Heroku account to follow the steps below, or replace the Heroku steps with the deployment platform of your choosing.
+The application is built using Express and is deployed on Heroku.
 
 ## Prerequisites
 
@@ -13,7 +16,6 @@ This application is **deployed using Heroku**. You must either have a Heroku acc
     * Heroku CLI (or the deployment server of your choosing)
       * MacOS: `brew tap heroku/brew && brew install heroku` 
       * Linux distributions that support Snap applications: `sudo snap install --classic heroku`
-      * Windows: Coming soon
     * Docker 
       * Tip: You do NOT need to log in to Docker, just have it installed.
 2. Make sure you have a set up a [Github](github.com) account.
@@ -156,6 +158,13 @@ If using a different deployment platform, please refer to the platform's documen
     ![insert new tab](./images/use-the-app-step2.png)
 3. When prompted, click **Authorize application**.
 4. Click the **Select an item** dropdown and choose an Element. Give the gltf viewer a few moments to load.
-5. Drag the screen to adjust the view.
+
+Note that if you have a complex model with a lot of parts, translating the model to GLTF can be time consuming. If you think there is an issue loading or rendering your model, you can open the Javascript console of your browser to check for any errors.
+
+Once the model is rendered, the following controls are available to you:
+* Zoom:	Mouse wheel
+* Rotate: Left-click and move mouse
+* Pan: Right-click and move mouse
 
 That's it! Now you can use the gltf viewer in your Onshape documents, and you can refer to your `app-gltf-viewer-clone` repository in Github to see how the app handles authentication.
+
