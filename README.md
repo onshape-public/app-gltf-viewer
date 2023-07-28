@@ -16,10 +16,10 @@ The application is built using Express and is deployed on Heroku.
     * Heroku CLI (or the deployment server of your choosing)
       * MacOS: `brew tap heroku/brew && brew install heroku` 
       * Linux distributions that support Snap applications: `sudo snap install --classic heroku`
-      * Windows: (download the Heroku CLI Installer)[https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli]
+      * Windows: [download the Heroku CLI Installer](https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli)
     * Docker 
       * Tip: You do NOT need to log in to Docker, just have it installed.
-      * If you see the "you are not allowed to use Docker" error on Windows, (follow the troubleshooting steps here)[https://icij.gitbook.io/datashare/usage/faq/common-errors/you-are-not-allowed-to-use-docker-you-must-be-in-the-docker-users-group-.-what-should-i-do].
+      * If you see the "you are not allowed to use Docker" error on Windows, [follow the troubleshooting steps here](https://icij.gitbook.io/datashare/usage/faq/common-errors/you-are-not-allowed-to-use-docker-you-must-be-in-the-docker-users-group-.-what-should-i-do).
 2. Make sure you have a set up a [Github](github.com) account.
 
 
