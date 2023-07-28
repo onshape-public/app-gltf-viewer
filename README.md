@@ -16,8 +16,10 @@ The application is built using Express and is deployed on Heroku.
     * Heroku CLI (or the deployment server of your choosing)
       * MacOS: `brew tap heroku/brew && brew install heroku` 
       * Linux distributions that support Snap applications: `sudo snap install --classic heroku`
+      * Windows: [download the Heroku CLI Installer](https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli)
     * Docker 
       * Tip: You do NOT need to log in to Docker, just have it installed.
+      * If you see the "you are not allowed to use Docker" error on Windows, [follow the troubleshooting steps here](https://icij.gitbook.io/datashare/usage/faq/common-errors/you-are-not-allowed-to-use-docker-you-must-be-in-the-docker-users-group-.-what-should-i-do).
 2. Make sure you have a set up a [Github](github.com) account.
 
 
@@ -100,7 +102,7 @@ If using a different deployment platform, please refer to the platform's documen
 4. Fill out the Create extension dialog:
     * Name: `gltf-viewer`
     * Location: `Element tab`
-    * Action URL: <Heroku-app-URL>
+    * Action URL: `<Heroku-app-URL>`
         * e.g., `https://app-gltf-viewer-yourname-c11f263794bc.herokuapp.com`
 5. Click **OK**.
 
