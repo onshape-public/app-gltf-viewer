@@ -63,7 +63,7 @@ app.use('/oauthSignin', (req, res) => {
 
 app.use('/oauthRedirect', () => {
     console.log("In /oauthRedirect middleware");
-    passport.authenticate('onshape', { failureRedirect: '/grantDenied' })
+    return passport.authenticate('onshape', { failureRedirect: '/grantDenied' });
 }, (req, res) => {
     res.redirect(`/?documentId=${req.session.state.docId}&workspaceId=${req.session.state.workId}&elementId=${req.session.state.elId}`);
 });
