@@ -61,10 +61,7 @@ app.use('/oauthSignin', (req, res) => {
     return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
 }, (req, res) => {     console.log("Redirecting to Onshape for authentication");/* redirected to Onshape for authentication */ });
 
-app.use('/oauthRedirect', (req, res) => {
-    console.log("In /oauthRedirect middleware");
-    return passport.authenticate('onshape', { failureRedirect: '/grantDenied' })(req, res);
-}, (req, res) => {
+app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
     res.redirect(`/?documentId=${req.session.state.docId}&workspaceId=${req.session.state.workId}&elementId=${req.session.state.elId}`);
 });
 
