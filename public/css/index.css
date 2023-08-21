@@ -1,8 +1,49 @@
 
-select {
+canvas {
+    width: 100%;
+}
+
+@font-face {
+    font-family: 'Flama';
+    src: url('../fonts/Flama-Regular.woff') format('woff2');
+    font-weight: 100;
+    font-style: normal;
+}
+
+.top_bar_container {
+    background-color: white;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center;
+}
+
+.title {
+    font-family: 'Flama', sans-serif;
+    color: #64bc64;
+    font-size: 50px;
+    margin-top: 10px;
     margin-bottom: 20px;
 }
 
-canvas {
-    width: 100%;
+.select-container{
+    font-family: 'Flama', sans-serif;
+    background-color: #f9f9f9;
+    width:25%;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size:14px;
+}
+
+.help_icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+#selected-option {
+    margin-top: 0px;
+    font-family: 'Flama', sans-serif;
+    color: #64bc64;
+    font-size: x-large;
 }

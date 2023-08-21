@@ -57,12 +57,16 @@ app.use('/oauthSignin', (req, res) => {
         elId: req.query.elementId
     };
     req.session.state = state;
-    console.log("In /oauthSignin middleware");
     return passport.authenticate('onshape', { state: uuid.v4(state) })(req, res);
-}, (req, res) => {     console.log("Redirecting to Onshape for authentication");/* redirected to Onshape for authentication */ });
+}, (req, res) => { /* redirected to Onshape for authentication */ });
 
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
-    res.redirect(`/?documentId=${req.session.state.docId}&workspaceId=${req.session.state.workId}&elementId=${req.session.state.elId}`);
+    if (req.session.state) {
+        res.redirect(`/?documentId=${req.session.state.docId}&workspaceId=${req.session.state.workId}&elementId=${req.session.state.elId}`);
+    }
+    else {
+        res.sendFile(path.join(__dirname, 'public', 'html', 'cookiesDisabled.html'));
+    }
 });
 
 app.get('/grantDenied', (req, res) => {
@@ -78,23 +82,19 @@ app.get('/grantDenied', (req, res) => {
  */
 app.get('/', (req, res) => {
     if (!req.user) {
-        console.log("No user logged in");
         return res.redirect(`/oauthSignin${req._parsedUrl.search ? req._parsedUrl.search : ""}`);
     } else {
         refreshAccessToken(req.user).then((tokenJson) => {
-            console.log("User is logged in, refreshinhg token");
             // Dereference the user object and update the access token and refresh token in the in-memory object.
             let usrObj = JSON.parse(JSON.stringify(req.user));
             usrObj.accessToken = tokenJson.access_token;
             usrObj.refreshToken = tokenJson.refresh_token;
             // Update the user object in PassportJS. No redirections will happen here, this is a purely internal operation.
             req.login(usrObj, () => {
-                console.log("Refresh token success");
                 return res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
             });
         }).catch(() => {
             // Refresh token failed, take the user to OAuth sign in page.
-            console.log("Refresh token failure");
             return res.redirect(`/oauthSignin${req._parsedUrl.search ? req._parsedUrl.search : ""}`);
         });
     }

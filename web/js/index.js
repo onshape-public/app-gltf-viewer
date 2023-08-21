@@ -278,7 +278,44 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                     displayError(`Error while requesting element parts: ${err}`);
                 }
             }
+            else if (elem.elementType === 'ASSEMBLY'){
+                const child = document.createElement('option');
+                child.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
+                child.innerText = `Assembly - ${elem.name}`;
+                $elemSelector.appendChild(child);
+            }
         }
     }).catch((err) => {
         displayError(`Error while requesting document elements: ${err}`);
     });
+
+const dropdown = document.getElementById('elem-selector');
+const selectedOptionText = document.getElementById('selected-option');
+
+dropdown.addEventListener('change', function() {
+    const selectedValue = dropdown.value;
+    selectedOptionText.textContent = selectedValue;
+});
+
+document.getElementById('elem-selector').addEventListener('click', onClickHandler);
+document.getElementById('elem-selector').addEventListener('mousedown', onMouseDownHandler);
+
+function onMouseDownHandler(e){
+	var el = e.currentTarget;
+	
+    // when we click, don't make it choose an option
+    if(el.hasAttribute('size') && el.getAttribute('size') == '1'){
+    	e.preventDefault();    
+    }
+}
+
+function onClickHandler(e) {
+ 	var el = e.currentTarget; 
+
+    if (el.getAttribute('size') == '1') {
+        el.setAttribute('size', '5');
+    }
+    else {
+        el.setAttribute('size', '1');
+    }
+}
