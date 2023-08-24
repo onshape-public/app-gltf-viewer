@@ -303,7 +303,7 @@ document.getElementById('elem-selector').addEventListener('mousedown', onMouseDo
 function onMouseDownHandler(e){
 	var el = e.currentTarget;
 	
-    // when we click, don't make it choose an option
+    // when we click for the first time, don't make it choose an option, instead dropdown a scrollable list
     if(el.hasAttribute('size') && el.getAttribute('size') == '1'){
     	e.preventDefault();    
     }
