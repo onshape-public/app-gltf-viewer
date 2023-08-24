@@ -297,6 +297,8 @@ dropdown.addEventListener('change', function() {
     selectedOptionText.textContent = selectedValue;
 });
 
+
+// dynamic dropdown
 document.getElementById('elem-selector').addEventListener('click', onClickHandler);
 document.getElementById('elem-selector').addEventListener('mousedown', onMouseDownHandler);
 
