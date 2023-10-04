@@ -290,34 +290,34 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
     });
 
 const dropdown = document.getElementById('elem-selector');
-const selectedOptionText = document.getElementById('selected-option');
+// const selectedOptionText = document.getElementById('selected-option');
 
 dropdown.addEventListener('change', function() {
     const selectedValue = dropdown.value;
-    selectedOptionText.textContent = selectedValue;
+    // selectedOptionText.textContent = selectedValue;
 });
 
 
 // dynamic dropdown
-document.getElementById('elem-selector').addEventListener('click', onClickHandler);
-document.getElementById('elem-selector').addEventListener('mousedown', onMouseDownHandler);
+// document.getElementById('elem-selector').addEventListener('click', onClickHandler);
+// document.getElementById('elem-selector').addEventListener('mousedown', onMouseDownHandler);
 
-function onMouseDownHandler(e){
-	var el = e.currentTarget;
+// function onMouseDownHandler(e){
+// 	var el = e.currentTarget;
 	
-    // when we click for the first time, don't make it choose an option, instead dropdown a scrollable list
-    if(el.hasAttribute('size') && el.getAttribute('size') == '1'){
-    	e.preventDefault();    
-    }
-}
+//     // when we click for the first time, don't make it choose an option, instead dropdown a scrollable list
+//     if(el.hasAttribute('size') && el.getAttribute('size') == '1'){
+//     	e.preventDefault();    
+//     }
+// }
 
-function onClickHandler(e) {
- 	var el = e.currentTarget; 
+// function onClickHandler(e) {
+//  	var el = e.currentTarget; 
 
-    if (el.getAttribute('size') == '1') {
-        el.setAttribute('size', '5');
-    }
-    else {
-        el.setAttribute('size', '1');
-    }
-}
+//     if (el.getAttribute('size') == '1') {
+//         el.setAttribute('size', '5');
+//     }
+//     else {
+//         el.setAttribute('size', '1');
+//     }
+// }
