@@ -20,8 +20,7 @@ canvas {
 
 .title {
     font-family: 'Flama', sans-serif;
-    color: #64bc64;
-    font-size: 50px;
+    font-size: 28px;
     margin-top: 10px;
     margin-bottom: 20px;
 }
@@ -35,15 +34,19 @@ canvas {
     font-size:14px;
 }
 
-.help_icon {
-    position: fixed;
-    top: 20px;
-    right: 20px;
+.top-nav-icons {
+    margin: 0px 15px;
 }
 
-#selected-option {
-    margin-top: 0px;
-    font-family: 'Flama', sans-serif;
-    color: #64bc64;
-    font-size: x-large;
+.full-width {
+    width: 100%;
+}
+
+.top-nav-icons-container {
+    display: flex;
+    justify-content: right;
+    padding-right: 15px;
+    position: absolute;
+    top: 3%;
+    right: 2%;
 }
