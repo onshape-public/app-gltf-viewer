@@ -63,8 +63,9 @@ app.use('/oauthSignin', (req, res) => {
 app.use('/oauthRedirect', passport.authenticate('onshape', { failureRedirect: '/grantDenied' }), (req, res) => {
     if (req.session.state) {
         res.redirect(`/?documentId=${req.session.state.docId}&workspaceId=${req.session.state.workId}&elementId=${req.session.state.elId}`);
-    }
-    else {
+    } else {
+        // If the session state has not been stored, it is because the user has disabled 3rd party cookies.
+        // In this case, we will show a message to the user asking them to enable cookies.
         res.sendFile(path.join(__dirname, 'public', 'html', 'cookiesDisabled.html'));
     }
 });
