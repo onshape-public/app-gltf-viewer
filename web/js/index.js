@@ -180,6 +180,10 @@ const initThreeJsElements = function() {
                 (err) => { // onError
                     displayError(`Error loading GLTF: ${err}`);
                 });
+        },
+        clearGltfCanvas: () => {
+            const existingGltfScene = scene.getObjectByName('gltf_scene')
+            if (existingGltfScene) scene.remove(existingGltfScene);
         }
     };
 };
@@ -218,7 +222,9 @@ const poll = (intervalInSeconds, promiseProducer, stopCondFunc, then) => {
 const displayError = (msg) => {
     console.log('Error:', msg);
     const $viewport = document.getElementById('gltf-viewport');
-    const $msgElem = document.createElement('p');
+    let $msgElem = document.getElementById('error-div');
+    if (!$msgElem) $msgElem = document.createElement('p');
+    $msgElem.id = 'error-div'
     $msgElem.style.color = 'red';
     $msgElem.style.font = 'italic';
     $msgElem.innerText = msg;
@@ -230,12 +236,13 @@ if (!WEBGL.isWebGLAvailable()) {
     document.getElementById('gltf-viewport').appendChild(WEBGL.getWebGLErrorMessage());
 }
 
-const { loadGltf } = initThreeJsElements();
+const { loadGltf, clearGltfCanvas } = initThreeJsElements();
 
 $elemSelector.addEventListener('change', async (evt) => {
     // Trigger translation by getting /api/gltf
     const selectedOption = evt.target.options[event.target.selectedIndex];
-    if (selectedOption.innerText !== '-- Select an Item --') {
+    clearGltfCanvas();
+    if (selectedOption.innerText !== 'Select an Element') {
         try {
             document.body.style.cursor = 'progress';
             const resp = await fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`);
@@ -288,36 +295,3 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
     }).catch((err) => {
         displayError(`Error while requesting document elements: ${err}`);
     });
-
-const dropdown = document.getElementById('elem-selector');
-// const selectedOptionText = document.getElementById('selected-option');
-
-dropdown.addEventListener('change', function() {
-    const selectedValue = dropdown.value;
-    // selectedOptionText.textContent = selectedValue;
-});
-
-
-// dynamic dropdown
-// document.getElementById('elem-selector').addEventListener('click', onClickHandler);
-// document.getElementById('elem-selector').addEventListener('mousedown', onMouseDownHandler);
-
-// function onMouseDownHandler(e){
-// 	var el = e.currentTarget;
-	
-//     // when we click for the first time, don't make it choose an option, instead dropdown a scrollable list
-//     if(el.hasAttribute('size') && el.getAttribute('size') == '1'){
-//     	e.preventDefault();    
-//     }
-// }
-
-// function onClickHandler(e) {
-//  	var el = e.currentTarget; 
-
-//     if (el.getAttribute('size') == '1') {
-//         el.setAttribute('size', '5');
-//     }
-//     else {
-//         el.setAttribute('size', '1');
-//     }
-// }
