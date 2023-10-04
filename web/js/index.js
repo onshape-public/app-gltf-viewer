@@ -25,6 +25,7 @@ const $elemSelector = document.getElementById('elem-selector');
  * @returns {object} An object containing the `loadGltf` function.
  */
 const initThreeJsElements = function() {
+    let activeGltfBody; // Used for downloading GLTFs.
     const camera = new PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1e6);
     camera.position.set(3, 3, 3);
         
@@ -170,6 +171,7 @@ const initThreeJsElements = function() {
          * @param {object} gltfData The GLTF data to be rendered.
          */
         loadGltf: (gltfData) => {
+            activeGltfBody = gltfData;
             gltfLoader.parse(gltfData, '',
                 (gltf) => { // onLoad
                     document.body.style.cursor = 'default';
@@ -185,6 +187,10 @@ const initThreeJsElements = function() {
         clearGltfCanvas: () => {
             const existingGltfScene = scene.getObjectByName('gltf_scene')
             if (existingGltfScene) scene.remove(existingGltfScene);
+        },
+        exportGltf: () => {
+            let data = "data:text/json;charset=utf-8," + encodeURIComponent(activeGltfBody);
+            return data;
         }
     };
 };
@@ -246,7 +252,7 @@ if (!WEBGL.isWebGLAvailable()) {
     document.getElementById('gltf-viewport').appendChild(WEBGL.getWebGLErrorMessage());
 }
 
-const { loadGltf, clearGltfCanvas } = initThreeJsElements();
+const { loadGltf, clearGltfCanvas, exportGltf } = initThreeJsElements();
 
 $elemSelector.addEventListener('change', async (evt) => {
     // Trigger translation by getting /api/gltf
@@ -294,8 +300,7 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 } catch(err) {
                     displayError(`Error while requesting element parts: ${err}`);
                 }
-            }
-            else if (elem.elementType === 'ASSEMBLY'){
+            } else if (elem.elementType === 'ASSEMBLY') {
                 const child = document.createElement('option');
                 child.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
                 child.innerText = `Assembly - ${elem.name}`;
@@ -305,3 +310,21 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
     }).catch((err) => {
         displayError(`Error while requesting document elements: ${err}`);
     });
+
+const $downloadGltfElem = document.getElementById('download-gltf');
+$downloadGltfElem.onclick = () => {
+    const selectedElem = $elemSelector.options[$elemSelector.selectedIndex];
+    if (selectedElem.innerText === 'Select an Element') {
+        return;
+    } else {
+        let dataBlob = exportGltf();
+        let downloadLink = document.createElement('a');
+        downloadLink.target = "_blank";
+        downloadLink.style.display = 'none';
+        downloadLink.href = dataBlob;
+        downloadLink.download = selectedElem.innerText + '.gltf';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+};

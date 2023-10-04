@@ -36,6 +36,7 @@ canvas {
 
 .top-nav-icons {
     margin: 0px 15px;
+    cursor: pointer;
 }
 
 .full-width {
