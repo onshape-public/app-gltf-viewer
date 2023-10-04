@@ -176,6 +176,7 @@ const initThreeJsElements = function() {
                     const gltfScene = gltf.scene || gltf.scenes[0];
                     setGltfContents(gltfScene);
                     animate();
+                    removeError();
                 },
                 (err) => { // onError
                     displayError(`Error loading GLTF: ${err}`);
@@ -229,6 +230,15 @@ const displayError = (msg) => {
     $msgElem.style.font = 'italic';
     $msgElem.innerText = msg;
     $viewport.insertBefore($msgElem, $viewport.firstChild);
+}
+
+/**
+ * Remove an error message that was shown.
+ */
+const removeError = () => {
+    const $viewport = document.getElementById('gltf-viewport');
+    let $msgElem = document.getElementById('error-div');
+    if ($msgElem) $viewport.removeChild($msgElem);
 }
 
 if (!WEBGL.isWebGLAvailable()) {
