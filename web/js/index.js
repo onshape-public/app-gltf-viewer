@@ -25,6 +25,7 @@ const $elemSelector = document.getElementById('elem-selector');
  * @returns {object} An object containing the `loadGltf` function.
  */
 const initThreeJsElements = function() {
+    let activeGltfBody; // Used for downloading GLTFs.
     const camera = new PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1e6);
     camera.position.set(3, 3, 3);
         
@@ -170,16 +171,26 @@ const initThreeJsElements = function() {
          * @param {object} gltfData The GLTF data to be rendered.
          */
         loadGltf: (gltfData) => {
+            activeGltfBody = gltfData;
             gltfLoader.parse(gltfData, '',
                 (gltf) => { // onLoad
                     document.body.style.cursor = 'default';
                     const gltfScene = gltf.scene || gltf.scenes[0];
                     setGltfContents(gltfScene);
                     animate();
+                    removeError();
                 },
                 (err) => { // onError
                     displayError(`Error loading GLTF: ${err}`);
                 });
+        },
+        clearGltfCanvas: () => {
+            const existingGltfScene = scene.getObjectByName('gltf_scene')
+            if (existingGltfScene) scene.remove(existingGltfScene);
+        },
+        exportGltf: () => {
+            let data = "data:text/json;charset=utf-8," + encodeURIComponent(activeGltfBody);
+            return data;
         }
     };
 };
@@ -218,11 +229,22 @@ const poll = (intervalInSeconds, promiseProducer, stopCondFunc, then) => {
 const displayError = (msg) => {
     console.log('Error:', msg);
     const $viewport = document.getElementById('gltf-viewport');
-    const $msgElem = document.createElement('p');
+    let $msgElem = document.getElementById('error-div');
+    if (!$msgElem) $msgElem = document.createElement('p');
+    $msgElem.id = 'error-div'
     $msgElem.style.color = 'red';
     $msgElem.style.font = 'italic';
     $msgElem.innerText = msg;
     $viewport.insertBefore($msgElem, $viewport.firstChild);
+}
+
+/**
+ * Remove an error message that was shown.
+ */
+const removeError = () => {
+    const $viewport = document.getElementById('gltf-viewport');
+    let $msgElem = document.getElementById('error-div');
+    if ($msgElem) $viewport.removeChild($msgElem);
 }
 
 if (!WEBGL.isWebGLAvailable()) {
@@ -230,12 +252,13 @@ if (!WEBGL.isWebGLAvailable()) {
     document.getElementById('gltf-viewport').appendChild(WEBGL.getWebGLErrorMessage());
 }
 
-const { loadGltf } = initThreeJsElements();
+const { loadGltf, clearGltfCanvas, exportGltf } = initThreeJsElements();
 
 $elemSelector.addEventListener('change', async (evt) => {
     // Trigger translation by getting /api/gltf
     const selectedOption = evt.target.options[event.target.selectedIndex];
-    if (selectedOption.innerText !== '-- Select an Item --') {
+    clearGltfCanvas();
+    if (selectedOption.innerText !== 'Select an Element') {
         try {
             document.body.style.cursor = 'progress';
             const resp = await fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`);
@@ -277,8 +300,31 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 } catch(err) {
                     displayError(`Error while requesting element parts: ${err}`);
                 }
+            } else if (elem.elementType === 'ASSEMBLY') {
+                const child = document.createElement('option');
+                child.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
+                child.innerText = `Assembly - ${elem.name}`;
+                $elemSelector.appendChild(child);
             }
         }
     }).catch((err) => {
         displayError(`Error while requesting document elements: ${err}`);
     });
+
+const $downloadGltfElem = document.getElementById('download-gltf');
+$downloadGltfElem.onclick = () => {
+    const selectedElem = $elemSelector.options[$elemSelector.selectedIndex];
+    if (selectedElem.innerText === 'Select an Element') {
+        return;
+    } else {
+        let dataBlob = exportGltf();
+        let downloadLink = document.createElement('a');
+        downloadLink.target = "_blank";
+        downloadLink.style.display = 'none';
+        downloadLink.href = dataBlob;
+        downloadLink.download = selectedElem.innerText + '.gltf';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+};
