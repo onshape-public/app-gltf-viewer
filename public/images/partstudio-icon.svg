@@ -1,0 +1,9 @@
+<svg width="35" height="20" viewBox="0 0 35 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="preview/default-partstudio">
+<g id="preview part studio">
+<path id="part studio outline" d="M12 6.66667H16L17.3333 8V4H21.3333L23.3333 6V16H19.3333L18 14.6667V16H14L12 14V6.66667Z" fill="#999999"/>
+<path id="part studio fill" fill-rule="evenodd" clip-rule="evenodd" d="M21 4.66667H18V13.6667L19.6667 15.3333H22.6667V6.33333L21 4.66667ZM15.6667 7.33333H12.6667V13.6667L14.3333 15.3333H17.3333V9L15.6667 7.33333Z" fill="white"/>
+<path id="part studio outline_2" fill-rule="evenodd" clip-rule="evenodd" d="M17.7845 4.21548L17.5488 4.45118L19.5 6.40237V15.6667H19.8333V6.5H23V6.16667H19.7357L17.7845 4.21548ZM12.4512 6.88215L14.4024 8.83333H17.6667V9.16667H14.5V15.6667H14.1667V9.06904L12.2155 7.11785L12.4512 6.88215Z" fill="#999999"/>
+</g>
+</g>
+</svg>

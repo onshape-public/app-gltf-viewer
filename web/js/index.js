@@ -18,6 +18,7 @@ import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls
  * The <select> element that allows the user to pick an item to translate.
  */
 const $elemSelector = document.getElementById('elem-selector');
+const $dropdownList = document.getElementById('dropdown-list');
 
 /**
  * Initialize the THREE elements needed for rendering the GLTF data.
@@ -287,6 +288,15 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 child.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
                 child.innerText = `Element - ${elem.name}`;
                 $elemSelector.appendChild(child);
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
+                link.innerText = `Element - ${elem.name}`;
+                const img = document.createElement('img');
+                img.src = "../images/partstudio-icon.svg";
+                link.appendChild(img);
+                listItem.appendChild(link);
+                $dropdownList.appendChild(listItem);
                 // Get the Parts of each element for the dropdown
                 try {
                     const partsResp = await fetch(`/api/elements/${elem.id}/parts${window.location.search}`, { headers: { 'Accept': 'application/json' }});
@@ -296,6 +306,15 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                         partChild.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
                         partChild.innerText = `Part - ${elem.name} - ${part.name}`;
                         $elemSelector.appendChild(partChild);
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
+                        link.innerText = `Part - ${elem.name} - ${part.name}`;
+                        const img = document.createElement('img');
+                        img.src = "../images/part-icon.svg";
+                        link.appendChild(img);
+                        listItem.appendChild(link);
+                        $dropdownList.appendChild(listItem);
                     }
                 } catch(err) {
                     displayError(`Error while requesting element parts: ${err}`);
@@ -305,6 +324,15 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 child.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
                 child.innerText = `Assembly - ${elem.name}`;
                 $elemSelector.appendChild(child);
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
+                link.innerText = `Assembly - ${elem.name}`;
+                const img = document.createElement('img');
+                img.src = "../images/assembly-icon.svg";
+                link.appendChild(img);
+                listItem.appendChild(link);
+                $dropdownList.appendChild(listItem);
             }
         }
     }).catch((err) => {

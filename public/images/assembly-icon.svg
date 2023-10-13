@@ -1,0 +1,10 @@
+<svg width="35" height="20" viewBox="0 0 35 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="preview/default-assembly">
+<g id="preview assembly">
+<path id="assembly outline" d="M11.5 4H20.8333L23.5 6.66667V16H14.1667L11.5 13.3333V4Z" fill="#999999"/>
+<path id="assembly fill" fill-rule="evenodd" clip-rule="evenodd" d="M12.1667 13V4.66667H20.5L22.8333 7V15.3333H14.5L12.1667 13Z" fill="white"/>
+<path id="assembly fill_2" fill-rule="evenodd" clip-rule="evenodd" d="M12.1667 4.66667L17.5 4.66667L19.8333 7V12.3333H14.5L12.1667 10V4.66667Z" fill="#D2D2D2"/>
+<path id="assembly outline_2" fill-rule="evenodd" clip-rule="evenodd" d="M14.3333 15.6667V12.4024L11.7155 9.78452L11.9512 9.54882L14.3333 11.931V7.06904L11.7155 4.45118L11.9512 4.21548L14.569 6.83333H19.431L17.0488 4.45118L17.2845 4.21548L19.9024 6.83333H23.1667V7.16667H20V12.5H14.6667V15.6667H14.3333ZM14.6667 12.1667H19.6667V7.16667H14.6667V12.1667Z" fill="#999999"/>
+</g>
+</g>
+</svg>

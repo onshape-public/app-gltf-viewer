@@ -1,0 +1,9 @@
+<svg width="35" height="20" viewBox="0 0 35 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="preview/default-part">
+<g id="preview part">
+<path id="part outline" d="M16.8333 4L20.8333 4.00227L23.5 6.66667V16H14.1667L11.5 13.3333V9.33333H16.8333V4Z" fill="#999999"/>
+<path id="part fill" fill-rule="evenodd" clip-rule="evenodd" d="M17.5 4.66667H20.5L22.8333 7V15.3333H17.5H14.5L12.1667 13L12.1667 10H17.5V4.66667Z" fill="white"/>
+<path id="part outline_2" fill-rule="evenodd" clip-rule="evenodd" d="M17.2867 4.21333L19.9024 6.83333H23.1667V7.16667H20V12.5H14.6667V15.6667H14.3333V12.4024L11.7155 9.78452L11.9512 9.54882L14.569 12.1667H19.431L17.0488 9.78452L17.2845 9.54882L19.6667 11.931V7.06911L17.0467 4.45333L17.2867 4.21333Z" fill="#999999"/>
+</g>
+</g>
+</svg>

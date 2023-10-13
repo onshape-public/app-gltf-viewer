@@ -26,12 +26,11 @@ canvas {
 }
 
 .select-container{
-    font-family: 'Flama', sans-serif;
-    background-color: #f9f9f9;
-    width:25%;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size:14px;
+    font-family: 'Flama', sans-serif !important;
+    background-color: #f9f9f9 !important;
+    border-radius: 8px !important;
+    border: 1px solid #ccc !important;
+    font-size: 14px !important;
 }
 
 .top-nav-icons {
