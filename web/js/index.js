@@ -294,8 +294,9 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 const img = document.createElement('img');
                 img.src = "../images/partstudio-icon.svg";
                 link.innerText = `Element - ${elem.name}`;
-                link.appendChild(img);
+                listItem.appendChild(img);
                 listItem.appendChild(link);
+                listItem.style.display = 'flex';
                 $dropdownList.appendChild(listItem);
                 // Get the Parts of each element for the dropdown
                 try {
@@ -312,8 +313,9 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                         const img = document.createElement('img');
                         img.src = "../images/part-icon.svg";
                         link.innerText = `Part - ${elem.name} - ${part.name}`;
-                        link.appendChild(img);
+                        listItem.appendChild(img);
                         listItem.appendChild(link);
+                        listItem.style.display = 'flex';
                         $dropdownList.appendChild(listItem);
                     }
                 } catch(err) {
@@ -330,8 +332,9 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 const img = document.createElement('img');
                 img.src = "../images/assembly-icon.svg";
                 link.innerText = `Assembly - ${elem.name}`;
-                link.appendChild(img);
+                listItem.appendChild(img);
                 listItem.appendChild(link);
+                listItem.style.display = 'flex';
                 $dropdownList.appendChild(listItem);
             }
         }
