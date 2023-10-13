@@ -293,9 +293,9 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 link.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
                 const img = document.createElement('img');
                 img.src = "../images/partstudio-icon.svg";
+                link.innerText = `Element - ${elem.name}`;
                 link.appendChild(img);
                 listItem.appendChild(link);
-                link.innerText = `Element - ${elem.name}`;
                 $dropdownList.appendChild(listItem);
                 // Get the Parts of each element for the dropdown
                 try {
@@ -311,8 +311,8 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                         link.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
                         const img = document.createElement('img');
                         img.src = "../images/part-icon.svg";
-                        link.appendChild(img);
                         link.innerText = `Part - ${elem.name} - ${part.name}`;
+                        link.appendChild(img);
                         listItem.appendChild(link);
                         $dropdownList.appendChild(listItem);
                     }
