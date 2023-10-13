@@ -295,6 +295,7 @@ myDropdown.addEventListener('hide.bs.dropdown', async (event) => {
                     displayError('There was an error translating the model to GLTF.');
                 } else {
                     console.log('Loading GLTF data...');
+                    document.getElementById('dropdown-button').innerText = selectedOption.innerText;
                     loadGltf(respJson);
                 }
             });
