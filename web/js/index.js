@@ -17,7 +17,7 @@ import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls
 /**
  * The <select> element that allows the user to pick an item to translate.
  */
-const $elemSelector = document.getElementById('elem-selector');
+const $dropdownButton = document.getElementById('dropdown-button');
 const $dropdownList = document.getElementById('dropdown-list');
 
 /**
@@ -70,7 +70,7 @@ const initThreeJsElements = function() {
      */
     const handleResize = () => {
         const width = window.innerWidth,
-            height = (window.innerHeight - $elemSelector.offsetHeight) * heightScale;
+            height = (window.innerHeight - $dropdownButton.offsetHeight) * heightScale;
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         renderer.setSize(width, height, false);
@@ -237,8 +237,7 @@ const displayError = (msg) => {
     $msgElem.style.font = 'italic';
     $msgElem.innerText = msg;
     $viewport.insertBefore($msgElem, $viewport.firstChild);
-    const dropdownButton = document.getElementById('dropdown-button');
-    dropdownButton.innerText = "Select an Element";
+    $dropdownButton.innerText = "Select an Element";
 }
 
 /**
@@ -257,35 +256,13 @@ if (!WEBGL.isWebGLAvailable()) {
 
 const { loadGltf, clearGltfCanvas, exportGltf } = initThreeJsElements();
 
-$elemSelector.addEventListener('change', async (evt) => {
-    // Trigger translation by getting /api/gltf
-    const selectedOption = evt.target.options[event.target.selectedIndex];
-    clearGltfCanvas();
-    if (selectedOption.innerText !== 'Select an Element') {
-        try {
-            document.body.style.cursor = 'progress';
-            const resp = await fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`);
-            const json = await resp.json();
-            poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 202, (respJson) => {
-                if (respJson.error) {
-                    displayError('There was an error translating the model to GLTF.');
-                } else {
-                    console.log('Loading GLTF data...');
-                    loadGltf(respJson);
-                }
-            });
-        } catch (err) {
-            displayError(`Error requesting GLTF data translation: ${err}`);
-        }
-    }
-});
-
 const myDropdown = document.getElementById('elements-dropdown')
 myDropdown.addEventListener('hide.bs.dropdown', async (event) => {
-    const currVal = document.getElementById('dropdown-button').innerText;
+    const currVal = $dropdownButton.innerText;
     let selectedOption = event.clickEvent.srcElement;
 
     if (currVal !== selectedOption.innerText) {
+        clearGltfCanvas();
         try {
             document.body.style.cursor = 'progress';
             const resp = await fetch(`/api/gltf${selectedOption.getAttribute('href')}`);
@@ -311,10 +288,6 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
     .then(async (json) => {
         for (const elem of json) {
             if (elem.elementType === 'PARTSTUDIO') {
-                const child = document.createElement('option');
-                child.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
-                child.innerText = `Element - ${elem.name}`;
-                $elemSelector.appendChild(child);
                 const listItem = document.createElement('li');
                 const link = document.createElement('div');
                 link.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
@@ -330,10 +303,6 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                     const partsResp = await fetch(`/api/elements/${elem.id}/parts${window.location.search}`, { headers: { 'Accept': 'application/json' }});
                     const partsJson = await partsResp.json();
                     for (const part of partsJson) {
-                        const partChild = document.createElement('option');
-                        partChild.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
-                        partChild.innerText = `Part - ${elem.name} - ${part.name}`;
-                        $elemSelector.appendChild(partChild);
                         const listItem = document.createElement('li');
                         const link = document.createElement('div');
                         link.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
@@ -349,10 +318,6 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                     displayError(`Error while requesting element parts: ${err}`);
                 }
             } else if (elem.elementType === 'ASSEMBLY') {
-                const child = document.createElement('option');
-                child.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
-                child.innerText = `Assembly - ${elem.name}`;
-                $elemSelector.appendChild(child);
                 const listItem = document.createElement('li');
                 const link = document.createElement('div');
                 link.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
@@ -371,7 +336,7 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
 
 const $downloadGltfElem = document.getElementById('download-gltf');
 $downloadGltfElem.onclick = () => {
-    const selectedElem = $elemSelector.options[$elemSelector.selectedIndex];
+    const selectedElem = $dropdownButton.innerText;
     if (selectedElem.innerText === 'Select an Element') {
         return;
     } else {
