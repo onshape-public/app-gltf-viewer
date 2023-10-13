@@ -289,12 +289,12 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 child.innerText = `Element - ${elem.name}`;
                 $elemSelector.appendChild(child);
                 const listItem = document.createElement('li');
-                const link = document.createElement('a');
+                const link = document.createElement('div');
                 link.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
-                link.innerText = `Element - ${elem.name}`;
                 const img = document.createElement('img');
                 img.src = "../images/partstudio-icon.svg";
                 link.appendChild(img);
+                link.innerText = `Element - ${elem.name}`;
                 listItem.appendChild(link);
                 $dropdownList.appendChild(listItem);
                 // Get the Parts of each element for the dropdown
@@ -307,13 +307,13 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                         partChild.innerText = `Part - ${elem.name} - ${part.name}`;
                         $elemSelector.appendChild(partChild);
                         const listItem = document.createElement('li');
-                        const link = document.createElement('a');
+                        const link = document.createElement('div');
                         link.setAttribute('href', `${window.location.search}&gltfElementId=${part.elementId}&partId=${part.partId}`);
-                        link.innerText = `Part - ${elem.name} - ${part.name}`;
                         const img = document.createElement('img');
                         img.src = "../images/part-icon.svg";
                         link.appendChild(img);
                         listItem.appendChild(link);
+                        link.innerText = `Part - ${elem.name} - ${part.name}`;
                         $dropdownList.appendChild(listItem);
                     }
                 } catch(err) {
@@ -325,12 +325,12 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 child.innerText = `Assembly - ${elem.name}`;
                 $elemSelector.appendChild(child);
                 const listItem = document.createElement('li');
-                const link = document.createElement('a');
+                const link = document.createElement('div');
                 link.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
-                link.innerText = `Assembly - ${elem.name}`;
                 const img = document.createElement('img');
                 img.src = "../images/assembly-icon.svg";
                 link.appendChild(img);
+                link.innerText = `Assembly - ${elem.name}`;
                 listItem.appendChild(link);
                 $dropdownList.appendChild(listItem);
             }
