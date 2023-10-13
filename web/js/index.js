@@ -336,7 +336,7 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
 
 const $downloadGltfElem = document.getElementById('download-gltf');
 $downloadGltfElem.onclick = () => {
-    const selectedElem = $dropdownButton.innerText;
+    const selectedElem = $dropdownButton;
     if (selectedElem.innerText === 'Select an Element') {
         return;
     } else {
