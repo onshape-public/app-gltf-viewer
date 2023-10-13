@@ -237,6 +237,8 @@ const displayError = (msg) => {
     $msgElem.style.font = 'italic';
     $msgElem.innerText = msg;
     $viewport.insertBefore($msgElem, $viewport.firstChild);
+    const dropdownButton = document.getElementById('dropdown-button');
+    dropdownButton.innerText = "Select an Element";
 }
 
 /**
@@ -277,6 +279,30 @@ $elemSelector.addEventListener('change', async (evt) => {
         }
     }
 });
+
+const myDropdown = document.getElementById('elements-dropdown')
+myDropdown.addEventListener('hide.bs.dropdown', async (event) => {
+    const currVal = document.getElementById('dropdown-button').innerText;
+    let selectedOption = event.clickEvent.srcElement;
+
+    if (currVal !== selectedOption.innerText) {
+        try {
+            document.body.style.cursor = 'progress';
+            const resp = await fetch(`/api/gltf${selectedOption.getAttribute('href')}`);
+            const json = await resp.json();
+            poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 202, (respJson) => {
+                if (respJson.error) {
+                    displayError('There was an error translating the model to GLTF.');
+                } else {
+                    console.log('Loading GLTF data...');
+                    loadGltf(respJson);
+                }
+            });
+        } catch (err) {
+            displayError(`Error requesting GLTF data translation: ${err}`);
+        }
+    }
+})
 
 // Get the Elements for the dropdown
 fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'application/json' } })

@@ -67,3 +67,7 @@ canvas {
     display: flex;
     cursor: pointer;
 }
+
+.dropdown-elem:hover {
+    background-color: #ccc;
+}
