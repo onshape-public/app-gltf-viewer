@@ -296,7 +296,7 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 link.innerText = `Element - ${elem.name}`;
                 listItem.appendChild(img);
                 listItem.appendChild(link);
-                listItem.style.display = 'flex';
+                listItem.className = 'dropdown-elem';
                 $dropdownList.appendChild(listItem);
                 // Get the Parts of each element for the dropdown
                 try {
@@ -315,7 +315,7 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                         link.innerText = `Part - ${elem.name} - ${part.name}`;
                         listItem.appendChild(img);
                         listItem.appendChild(link);
-                        listItem.style.display = 'flex';
+                        listItem.className = 'dropdown-elem';
                         $dropdownList.appendChild(listItem);
                     }
                 } catch(err) {
@@ -334,7 +334,7 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 link.innerText = `Assembly - ${elem.name}`;
                 listItem.appendChild(img);
                 listItem.appendChild(link);
-                listItem.style.display = 'flex';
+                listItem.className = 'dropdown-elem';
                 $dropdownList.appendChild(listItem);
             }
         }
