@@ -294,8 +294,8 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 const img = document.createElement('img');
                 img.src = "../images/partstudio-icon.svg";
                 link.appendChild(img);
-                link.innerText = `Element - ${elem.name}`;
                 listItem.appendChild(link);
+                link.innerText = `Element - ${elem.name}`;
                 $dropdownList.appendChild(listItem);
                 // Get the Parts of each element for the dropdown
                 try {
@@ -312,8 +312,8 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                         const img = document.createElement('img');
                         img.src = "../images/part-icon.svg";
                         link.appendChild(img);
-                        listItem.appendChild(link);
                         link.innerText = `Part - ${elem.name} - ${part.name}`;
+                        listItem.appendChild(link);
                         $dropdownList.appendChild(listItem);
                     }
                 } catch(err) {
@@ -329,8 +329,8 @@ fetch(`/api/elements${window.location.search}`, { headers: { 'Accept': 'applicat
                 link.setAttribute('href', `${window.location.search}&gltfElementId=${elem.id}`);
                 const img = document.createElement('img');
                 img.src = "../images/assembly-icon.svg";
-                link.appendChild(img);
                 link.innerText = `Assembly - ${elem.name}`;
+                link.appendChild(img);
                 listItem.appendChild(link);
                 $dropdownList.appendChild(listItem);
             }
