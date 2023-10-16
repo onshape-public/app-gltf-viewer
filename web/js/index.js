@@ -264,13 +264,7 @@ $elemSelector.addEventListener('change', async (evt) => {
             const resp = await fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`);
             const json = await resp.json();
             poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 202, (resp) => {
-                let respJson;
-                try {
-                    respJson = JSON.parse(resp);
-                } catch (error) {
-                    displayError('There was an error translating the model to GLTF: ' + error);
-                    return;
-                }
+                let respJson = JSON.parse(resp);
                 if (respJson.error) {
                     displayError('There was an error translating the model to GLTF: ' + respJson.error);
                 } else {
