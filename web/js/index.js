@@ -19,6 +19,8 @@ import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls
  */
 const $elemSelector = document.getElementById('elem-selector');
 
+let isError = false;
+
 /**
  * Initialize the THREE elements needed for rendering the GLTF data.
  * 
@@ -227,6 +229,7 @@ const poll = (intervalInSeconds, promiseProducer, stopCondFunc, then) => {
  * @param {string} msg The error message to be displayed.
  */
 const displayError = (msg) => {
+    isError = true;
     console.log('Error:', msg);
     const $viewport = document.getElementById('gltf-viewport');
     let $msgElem = document.getElementById('error-div');
@@ -242,6 +245,7 @@ const displayError = (msg) => {
  * Remove an error message that was shown.
  */
 const removeError = () => {
+    isError = false;
     const $viewport = document.getElementById('gltf-viewport');
     let $msgElem = document.getElementById('error-div');
     if ($msgElem) $viewport.removeChild($msgElem);
@@ -263,12 +267,13 @@ $elemSelector.addEventListener('change', async (evt) => {
             document.body.style.cursor = 'progress';
             const resp = await fetch(`/api/gltf${evt.target.options[event.target.selectedIndex].getAttribute('href')}`);
             const json = await resp.json();
-            poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 202, (respJson) => {
+            poll(5, () => fetch(`/api/gltf/${json.id}`), (resp) => resp.status !== 202, (resp) => {
+                let respJson = JSON.parse(resp);
                 if (respJson.error) {
-                    displayError('There was an error translating the model to GLTF.');
+                    displayError('There was an error translating the model to GLTF: ' + respJson.error);
                 } else {
                     console.log('Loading GLTF data...');
-                    loadGltf(respJson);
+                    loadGltf(resp);
                 }
             });
         } catch (err) {
@@ -317,6 +322,10 @@ $downloadGltfElem.onclick = () => {
     if (selectedElem.innerText === 'Select an Element') {
         return;
     } else {
+        if (isError) {
+            displayError('Could not download GLTF, errors exist within the selected model.');
+            return;
+        }
         let dataBlob = exportGltf();
         let downloadLink = document.createElement('a');
         downloadLink.target = "_blank";
