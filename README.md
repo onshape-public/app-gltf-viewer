@@ -32,7 +32,7 @@ The application is built using Express and is deployed on Heroku.
 2. Navigate to your Github account and create a new, blank repository named `app-gltf-viewer-clone`
 3. Copy the HTTPS URL of the repository you just created. You can find this on the **Code** tab in your repo.
 
-![copy the repo HTTPS URL](./images/clone-the-app-step3.png)
+![copy the repo HTTPS URL](public/images/clone-the-app-step3.png)
 
 4. Navigate into the cloned repo and push it to your new repository:
     ```
@@ -157,7 +157,7 @@ If using a different deployment platform, please refer to the platform's documen
 ## Use the GLTF viewer extension in Onshape
 1. Create a new Onshape document or open an existing one.
 2. With at least one Part in the document, click the **+** button in the bottom-left corner of the Onshape screen, then click **Applications > gltf-viewer**.
-    ![insert new tab](./images/use-the-app-step2.png)
+    ![insert new tab](public/images/use-the-app-step2.png)
 3. When prompted, click **Authorize application**.
 4. Click the **Select an item** dropdown and choose an Element. Give the gltf viewer a few moments to load.
 
