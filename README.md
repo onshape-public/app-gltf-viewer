@@ -32,7 +32,7 @@ The application is built using Express and is deployed on Heroku.
 2. Navigate to your Github account and create a new, blank repository named `app-gltf-viewer-clone`
 3. Copy the HTTPS URL of the repository you just created. You can find this on the **Code** tab in your repo.
 
-![copy the repo HTTPS URL](./images/clone-the-app-step3.png)
+![copy the repo HTTPS URL](public/images/clone-the-app-step3.png)
 
 4. Navigate into the cloned repo and push it to your new repository:
     ```
